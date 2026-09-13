@@ -1,0 +1,44 @@
+[package]
+name = "lexica"
+version = "0.1.0"
+description = "A local-first English dictionary that tries to make itself unnecessary."
+edition = "2021"
+# 存在多个 bin（import-ecdict 工具）时指定 tauri dev 的默认可执行文件。
+default-run = "lexica"
+
+[lib]
+# `_lib` 后缀避免与常见 crate 名冲突。
+name = "lexica_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+# 无头词库导入工具：`cargo run --release -p lexica --bin import-ecdict -- <stardict.db> <lexica.db>`
+# 与应用内导入命令走同一条 EcdictProvider 代码路径。
+[[bin]]
+name = "import-ecdict"
+path = "src/bin/import_ecdict.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+# release 构建必须启用：generate_context! 以「是否启用 custom-protocol」
+# 区分 dev（devUrl 热加载）与 release（内嵌 build/ 前端资产）。
+# `cargo build --release --features custom-protocol`
+[features]
+custom-protocol = ["tauri/custom-protocol"]
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rusqlite = { version = "0.32", features = ["bundled"] }
+chrono = { version = "0.4", features = ["serde"] }
+unicode-normalization = "0.1"
+thiserror = "2"
+
+[dev-dependencies]
+tempfile = "3"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"

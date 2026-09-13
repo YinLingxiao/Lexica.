@@ -1,0 +1,7 @@
+{
+	"$schema": "../gen/schemas/desktop-schema.json",
+	"identifier": "default",
+	"description": "Lexica 主窗口默认能力。自定义 command 无需额外权限。",
+	"windows": ["main"],
+	"permissions": ["core:default"]
+}

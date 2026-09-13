@@ -1,0 +1,1715 @@
+{
+  "version": 1,
+  "comment": "Lexica 种子词库。所有例句与英英释义均为原创（不复制任何出版词典）；frequency_rank 为近似值，仅用于搜索建议排序。词表选自 Oxford 3000 B1-C1 段中'阅读时会停下来查'的词。",
+  "words": [
+    {
+      "word": "meticulous",
+      "phonetic": "/məˈtɪkjələs/",
+      "frequency_rank": 12000,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "very careful and paying attention to every small detail",
+          "chinese": "一丝不苟的；极其仔细的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "She was meticulous about checking every detail before submitting the report.",
+              "translation": "提交报告前，她对每一个细节都一丝不苟地核对。"
+            },
+            {
+              "text": "The restoration team kept meticulous records of every brushstroke.",
+              "translation": "修复团队对每一笔修复都做了详尽的记录。"
+            },
+            {
+              "text": "Her meticulous notes saved us hours of debugging later.",
+              "translation": "她那细致入微的笔记后来为我们省了好几个小时的调试。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "be meticulous about sth", "gloss": "对某事一丝不苟" },
+        { "text": "meticulous attention to detail", "gloss": "对细节的极致关注" }
+      ],
+      "synonyms": ["careful", "painstaking", "thorough", "scrupulous"],
+      "antonyms": ["careless", "sloppy", "slapdash"],
+      "word_family": ["meticulously adv.", "meticulousness n."],
+      "forms": { "adverb": "meticulously", "noun": "meticulousness" }
+    },
+    {
+      "word": "elaborate",
+      "phonetic": "/ɪˈlæbərət/",
+      "frequency_rank": 3600,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "carefully planned with many details; complicated",
+          "chinese": "精心制作的；复杂精细的",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "They devised an elaborate plan to surprise their teacher on her birthday.",
+              "translation": "他们设计了一个精心策划的方案，要在生日那天给老师一个惊喜。"
+            },
+            {
+              "text": "The ceremony lasted three hours and followed an elaborate protocol.",
+              "translation": "典礼持续了三个小时，遵循一套繁复的礼节。"
+            }
+          ]
+        },
+        {
+          "pos": "v.",
+          "english": "to explain or describe something in more detail",
+          "chinese": "详细阐述；详细描述",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "Could you elaborate on what you meant by 'flexible deadlines'?",
+              "translation": "你能详细解释一下你说的“弹性截止日期”是什么意思吗？"
+            },
+            {
+              "text": "The report elaborates on the risks mentioned in the summary.",
+              "translation": "报告对摘要中提到的风险作了详细阐述。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "an elaborate plan", "gloss": "精心设计的方案" },
+        { "text": "elaborate on sth", "gloss": "对某事详加说明" }
+      ],
+      "synonyms": ["intricate", "detailed", "ornate"],
+      "antonyms": ["simple", "plain", "modest"],
+      "word_family": ["elaborately adv.", "elaboration n."],
+      "forms": {
+        "past": "elaborated",
+        "past_participle": "elaborated",
+        "third_person": "elaborates",
+        "ing": "elaborating",
+        "adverb": "elaborately",
+        "noun": "elaboration"
+      }
+    },
+    {
+      "word": "subtle",
+      "phonetic": "/ˈsʌtl/",
+      "frequency_rank": 3300,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "not obvious or easy to notice; delicate and indirect",
+          "chinese": "不易察觉的；微妙的；含蓄的",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "There is a subtle difference between being polite and being friendly.",
+              "translation": "礼貌和友好之间有一层微妙的差别。"
+            },
+            {
+              "text": "The sauce has a subtle hint of lemon.",
+              "translation": "这酱汁里有一丝不易察觉的柠檬味。"
+            },
+            {
+              "text": "He dropped subtle hints about wanting a transfer, but nobody noticed.",
+              "translation": "他对想调岗的事作了些含蓄的暗示，但没人注意到。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "a subtle difference", "gloss": "微妙的差别" },
+        { "text": "a subtle hint", "gloss": "含蓄的暗示" }
+      ],
+      "synonyms": ["slight", "faint", "understated"],
+      "antonyms": ["obvious", "blatant", "pronounced"],
+      "word_family": ["subtly adv.", "subtlety n."],
+      "forms": { "adverb": "subtly", "noun": "subtlety" }
+    },
+    {
+      "word": "acquire",
+      "phonetic": "/əˈkwaɪr/",
+      "frequency_rank": 1500,
+      "senses": [
+        {
+          "pos": "v.",
+          "english": "to get something, usually by effort or over time",
+          "chinese": "（尤指通过努力）获得；习得",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "It takes years to acquire a good command of academic English.",
+              "translation": "要花多年才能习得扎实的学术英语。"
+            },
+            {
+              "text": "Children acquire their first language without formal instruction.",
+              "translation": "儿童无需正式教学就能习得母语。"
+            },
+            {
+              "text": "The company acquired two smaller rivals before going public.",
+              "translation": "公司在上市前收购了两家规模较小的竞争对手。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "acquire a skill", "gloss": "习得一项技能" },
+        { "text": "acquire knowledge", "gloss": "获取知识" }
+      ],
+      "synonyms": ["obtain", "gain", "attain"],
+      "antonyms": ["lose", "forfeit", "relinquish"],
+      "word_family": ["acquisition n.", "acquired adj."],
+      "forms": {
+        "past": "acquired",
+        "past_participle": "acquired",
+        "third_person": "acquires",
+        "ing": "acquiring",
+        "noun": "acquisition",
+        "adjective": "acquired"
+      }
+    },
+    {
+      "word": "inevitable",
+      "phonetic": "/ɪnˈevɪtəbl/",
+      "frequency_rank": 2300,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "impossible to avoid or prevent",
+          "chinese": "不可避免的；必然发生的",
+          "level": "B1",
+          "examples": [
+            {
+              "text": "With so little rain, water shortages were inevitable.",
+              "translation": "雨水这么少，缺水是不可避免的。"
+            },
+            {
+              "text": "The decline of the old factory felt inevitable once the highway bypassed the town.",
+              "translation": "高速公路绕开小镇后，老工厂的衰落似乎已不可避免。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "the inevitable result", "gloss": "必然的结果" },
+        { "text": "the inevitable consequence", "gloss": "不可避免的后果" }
+      ],
+      "synonyms": ["unavoidable", "certain", "inescapable"],
+      "antonyms": ["avoidable", "preventable", "uncertain"],
+      "word_family": ["inevitably adv.", "inevitability n."],
+      "forms": { "adverb": "inevitably", "noun": "inevitability" }
+    },
+    {
+      "word": "reluctant",
+      "phonetic": "/rɪˈlʌktənt/",
+      "frequency_rank": 5000,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "not willing to do something; hesitant",
+          "chinese": "不情愿的，勉强的",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "She was reluctant to speak until she had all the facts.",
+              "translation": "在掌握全部事实之前，她不愿开口。"
+            },
+            {
+              "text": "He gave a reluctant yes to the weekend shift.",
+              "translation": "他勉强答应了周末值班。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "be reluctant to do sth", "gloss": "不情愿做某事" },
+        { "text": "a reluctant agreement", "gloss": "勉强的同意" }
+      ],
+      "synonyms": ["unwilling", "hesitant", "loath"],
+      "antonyms": ["willing", "eager", "keen"],
+      "word_family": ["reluctantly adv.", "reluctance n."],
+      "forms": { "adverb": "reluctantly", "noun": "reluctance" }
+    },
+    {
+      "word": "compelling",
+      "phonetic": "/kəmˈpelɪŋ/",
+      "frequency_rank": 4700,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "so convincing or interesting that you cannot easily ignore it",
+          "chinese": "令人信服的；引人入胜的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "The study offers compelling evidence that sleep affects memory.",
+              "translation": "这项研究提供了令人信服的证据，表明睡眠会影响记忆。"
+            },
+            {
+              "text": "She made a compelling case for postponing the launch.",
+              "translation": "她为推迟发布提出了极具说服力的理由。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "compelling evidence", "gloss": "有力的证据" },
+        { "text": "a compelling reason", "gloss": "极具说服力的理由" }
+      ],
+      "synonyms": ["convincing", "persuasive", "gripping"],
+      "antonyms": ["unconvincing", "weak", "dubious"],
+      "word_family": ["compel v.", "compellingly adv."],
+      "forms": { "adverb": "compellingly" }
+    },
+    {
+      "word": "profound",
+      "phonetic": "/prəˈfaʊnd/",
+      "frequency_rank": 3800,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "very great or deep; showing deep understanding",
+          "chinese": "深刻的，深远的；渊博的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "The war had a profound effect on his generation.",
+              "translation": "战争对他那一代人产生了深远的影响。"
+            },
+            {
+              "text": "The book is short, but its insights are profound.",
+              "translation": "这本书篇幅不长，见解却很深刻。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "a profound effect on sth", "gloss": "对某事物的深远影响" },
+        { "text": "profound changes", "gloss": "深刻的变革" }
+      ],
+      "synonyms": ["deep", "far-reaching", "weighty"],
+      "antonyms": ["superficial", "shallow", "trivial"],
+      "word_family": ["profoundly adv.", "profundity n."],
+      "forms": { "adverb": "profoundly", "noun": "profundity" }
+    },
+    {
+      "word": "ambiguous",
+      "phonetic": "/æmˈbɪɡjuəs/",
+      "frequency_rank": 5600,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "having more than one possible meaning; not clear",
+          "chinese": "模棱两可的，含义不明的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "His answer was deliberately ambiguous: 'We'll see.'",
+              "translation": "他的回答故意含糊其辞：“到时候看吧。”"
+            },
+            {
+              "text": "The law is ambiguous about who pays for the repairs.",
+              "translation": "法律对维修费由谁承担的规定含糊不清。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "an ambiguous answer", "gloss": "含糊的回答" },
+        { "text": "deliberately ambiguous", "gloss": "故意含糊其辞" }
+      ],
+      "synonyms": ["unclear", "vague", "equivocal"],
+      "antonyms": ["clear", "unambiguous", "explicit"],
+      "word_family": ["ambiguity n.", "ambiguously adv."],
+      "forms": { "noun": "ambiguity", "adverb": "ambiguously" }
+    },
+    {
+      "word": "resilient",
+      "phonetic": "/rɪˈzɪliənt/",
+      "frequency_rank": 10000,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "able to recover quickly from difficulties or damage",
+          "chinese": "有韧性的，能快速恢复的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Children are often more resilient than adults expect.",
+              "translation": "孩子们往往比大人预想的更有韧性。"
+            },
+            {
+              "text": "The local economy proved resilient after the flood.",
+              "translation": "洪水过后，当地经济显示出很强的恢复力。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "prove resilient", "gloss": "显示出韧性" },
+        { "text": "resilient to shocks", "gloss": "经得起冲击" }
+      ],
+      "synonyms": ["tough", "adaptable", "quick to recover"],
+      "antonyms": ["fragile", "brittle", "inflexible"],
+      "word_family": ["resilience n."],
+      "forms": { "noun": "resilience" }
+    },
+    {
+      "word": "pragmatic",
+      "phonetic": "/præɡˈmætɪk/",
+      "frequency_rank": 8000,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "dealing with problems in a practical way instead of following fixed theories",
+          "chinese": "务实的，实用主义的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "We took a pragmatic approach: fix the leak now, renovate later.",
+              "translation": "我们采取了务实的做法：先修漏，后翻新。"
+            },
+            {
+              "text": "She's idealistic about goals but pragmatic about methods.",
+              "translation": "她对目标理想主义，对方法务实。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "a pragmatic approach", "gloss": "务实的方法" },
+        { "text": "take a pragmatic view", "gloss": "持务实观点" }
+      ],
+      "synonyms": ["practical", "realistic", "sensible"],
+      "antonyms": ["idealistic", "dogmatic", "impractical"],
+      "word_family": ["pragmatism n.", "pragmatically adv."],
+      "forms": { "noun": "pragmatism", "adverb": "pragmatically" }
+    },
+    {
+      "word": "scrutinize",
+      "phonetic": "/ˈskruːtənaɪz/",
+      "frequency_rank": 14000,
+      "senses": [
+        {
+          "pos": "v.",
+          "english": "to examine something very carefully and closely",
+          "chinese": "仔细审查，细致检查",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Auditors scrutinized every transaction over the past five years.",
+              "translation": "审计人员仔细核查了过去五年的每一笔交易。"
+            },
+            {
+              "text": "The committee scrutinized the candidates' published research.",
+              "translation": "委员会仔细审查了候选人已发表的研究。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "scrutinize sth closely", "gloss": "仔细审查某物" }
+      ],
+      "synonyms": ["examine", "inspect", "pore over"],
+      "antonyms": ["skim", "overlook", "ignore"],
+      "word_family": ["scrutiny n."],
+      "forms": {
+        "past": "scrutinized",
+        "past_participle": "scrutinized",
+        "third_person": "scrutinizes",
+        "ing": "scrutinizing",
+        "noun": "scrutiny"
+      }
+    },
+    {
+      "word": "tentative",
+      "phonetic": "/ˈtentətɪv/",
+      "frequency_rank": 8000,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "not definite or certain; done cautiously because you are not sure",
+          "chinese": "暂定的，试探性的；迟疑的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "We have a tentative agreement, but nothing is signed yet.",
+              "translation": "我们达成了一个初步协议，但还没有签字。"
+            },
+            {
+              "text": "He gave a tentative smile, unsure whether he was welcome.",
+              "translation": "他迟疑地笑了笑，不确定自己是否受欢迎。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "a tentative agreement", "gloss": "初步协议" },
+        { "text": "a tentative conclusion", "gloss": "初步结论" }
+      ],
+      "synonyms": ["provisional", "unconfirmed", "hesitant"],
+      "antonyms": ["definite", "firm", "final"],
+      "word_family": ["tentatively adv."],
+      "forms": { "adverb": "tentatively" }
+    },
+    {
+      "word": "mitigate",
+      "phonetic": "/ˈmɪtɪɡeɪt/",
+      "frequency_rank": 9000,
+      "senses": [
+        {
+          "pos": "v.",
+          "english": "to make something bad less severe or harmful",
+          "chinese": "减轻，缓和",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Planting trees can mitigate the heat in crowded cities.",
+              "translation": "种树能缓解拥挤城市的暑热。"
+            },
+            {
+              "text": "Nothing could fully mitigate the damage caused by the delay.",
+              "translation": "没有什么能完全弥补延误造成的损失。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "mitigate the effects of sth", "gloss": "减轻某事物的影响" },
+        { "text": "mitigate a risk", "gloss": "降低风险" }
+      ],
+      "synonyms": ["lessen", "ease", "alleviate"],
+      "antonyms": ["worsen", "aggravate", "intensify"],
+      "word_family": ["mitigation n.", "mitigating adj."],
+      "forms": {
+        "past": "mitigated",
+        "past_participle": "mitigated",
+        "third_person": "mitigates",
+        "ing": "mitigating",
+        "noun": "mitigation",
+        "adjective": "mitigating"
+      }
+    },
+    {
+      "word": "conspicuous",
+      "phonetic": "/kənˈspɪkjuəs/",
+      "frequency_rank": 12000,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "very easy to notice; standing out",
+          "chinese": "显眼的，惹人注目的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "He was conspicuous in his bright orange jacket at the formal dinner.",
+              "translation": "他穿着亮橙色夹克出席正式晚宴，格外扎眼。"
+            },
+            {
+              "text": "Her absence from the meeting was conspicuous.",
+              "translation": "她缺席会议一事非常显眼。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "in a conspicuous place", "gloss": "在显眼的位置" },
+        { "text": "conspicuous consumption", "gloss": "炫耀性消费" }
+      ],
+      "synonyms": ["noticeable", "prominent", "striking"],
+      "antonyms": ["inconspicuous", "unobtrusive", "subtle"],
+      "word_family": ["conspicuously adv."],
+      "forms": { "adverb": "conspicuously" }
+    },
+    {
+      "word": "deteriorate",
+      "phonetic": "/dɪˈtɪriəreɪt/",
+      "frequency_rank": 9500,
+      "senses": [
+        {
+          "pos": "v.",
+          "english": "to become worse in quality or condition",
+          "chinese": "恶化，变坏",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "The patient's condition deteriorated overnight.",
+              "translation": "病人的病情在一夜之间恶化了。"
+            },
+            {
+              "text": "The old bridge deteriorated faster than engineers predicted.",
+              "translation": "老桥老化的速度超出了工程师的预料。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "deteriorate rapidly", "gloss": "迅速恶化" },
+        { "text": "deteriorate into violence", "gloss": "恶化为暴力" }
+      ],
+      "synonyms": ["worsen", "decline", "degenerate"],
+      "antonyms": ["improve", "recover", "strengthen"],
+      "word_family": ["deterioration n."],
+      "forms": {
+        "past": "deteriorated",
+        "past_participle": "deteriorated",
+        "third_person": "deteriorates",
+        "ing": "deteriorating",
+        "noun": "deterioration"
+      }
+    },
+    {
+      "word": "feasible",
+      "phonetic": "/ˈfiːzəbl/",
+      "frequency_rank": 6300,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "possible and practical to do",
+          "chinese": "可行的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Is it feasible to finish the migration before the holiday?",
+              "translation": "在假期前完成迁移可行吗？"
+            },
+            {
+              "text": "They rejected the design because it wasn't technically feasible.",
+              "translation": "他们否掉了那个设计，因为技术上不可行。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "technically feasible", "gloss": "技术上可行" },
+        { "text": "economically feasible", "gloss": "经济上可行" }
+      ],
+      "synonyms": ["possible", "practicable", "viable"],
+      "antonyms": ["impossible", "impractical", "unworkable"],
+      "word_family": ["feasibility n."],
+      "forms": { "noun": "feasibility" }
+    },
+    {
+      "word": "inherent",
+      "phonetic": "/ɪnˈhɪrənt/",
+      "frequency_rank": 5900,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "existing as a natural and permanent part of something",
+          "chinese": "固有的，内在的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Risk is inherent in any new business.",
+              "translation": "风险是任何新生意固有的。"
+            },
+            {
+              "text": "There's an inherent tension between speed and quality.",
+              "translation": "速度与质量之间存在一种固有的张力。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "inherent in sth", "gloss": "某物固有的" },
+        { "text": "an inherent risk", "gloss": "固有风险" }
+      ],
+      "synonyms": ["intrinsic", "built-in", "fundamental"],
+      "antonyms": ["extrinsic", "acquired", "external"],
+      "word_family": ["inherently adv."],
+      "forms": { "adverb": "inherently" }
+    },
+    {
+      "word": "undermine",
+      "phonetic": "/ˌʌndərˈmaɪn/",
+      "frequency_rank": 4500,
+      "senses": [
+        {
+          "pos": "v.",
+          "english": "to make something or someone gradually weaker, often secretly",
+          "chinese": "逐渐削弱，暗中损害",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Constant criticism can undermine a child's confidence.",
+              "translation": "不停的批评会逐渐削弱孩子的自信。"
+            },
+            {
+              "text": "The scandal undermined public trust in the agency.",
+              "translation": "这一丑闻损害了公众对该机构的信任。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "undermine confidence", "gloss": "削弱信心" },
+        { "text": "undermine sb's authority", "gloss": "损害某人的权威" }
+      ],
+      "synonyms": ["weaken", "erode", "subvert"],
+      "antonyms": ["strengthen", "reinforce", "bolster"],
+      "word_family": [],
+      "forms": {
+        "past": "undermined",
+        "past_participle": "undermined",
+        "third_person": "undermines",
+        "ing": "undermining"
+      }
+    },
+    {
+      "word": "versatile",
+      "phonetic": "/ˈvɜːrsətl/",
+      "frequency_rank": 8800,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "able to be used for many different purposes; having many skills",
+          "chinese": "用途广泛的；多才多艺的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Eggs are a versatile ingredient: boil, fry, or bake them.",
+              "translation": "鸡蛋是一种用途广泛的食材：煮、煎、烤都行。"
+            },
+            {
+              "text": "She's a versatile musician who plays four instruments.",
+              "translation": "她是位多才多艺的乐手，会演奏四种乐器。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "a versatile ingredient", "gloss": "百搭的食材" },
+        { "text": "a versatile performer", "gloss": "多才多艺的表演者" }
+      ],
+      "synonyms": ["adaptable", "all-round", "multifunctional"],
+      "antonyms": ["limited", "one-dimensional", "inflexible"],
+      "word_family": ["versatility n."],
+      "forms": { "noun": "versatility" }
+    },
+    {
+      "word": "skeptical",
+      "phonetic": "/ˈskeptɪkl/",
+      "frequency_rank": 4300,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "doubting that something is true or useful",
+          "chinese": "怀疑的，持怀疑态度的",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "I'm skeptical of any app that promises fluency in a month.",
+              "translation": "我对任何承诺一个月流利的 App 都持怀疑态度。"
+            },
+            {
+              "text": "Investors were skeptical at first, but the demo won them over.",
+              "translation": "投资人起初将信将疑，但演示说服了他们。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "be skeptical of sth", "gloss": "对某事持怀疑态度" },
+        { "text": "deeply skeptical", "gloss": "深表怀疑" }
+      ],
+      "synonyms": ["doubtful", "dubious", "cynical"],
+      "antonyms": ["convinced", "trusting", "credulous"],
+      "word_family": ["skepticism n.", "skeptic n.", "skeptically adv."],
+      "forms": { "noun": "skepticism", "adverb": "skeptically" }
+    },
+    {
+      "word": "dwindle",
+      "phonetic": "/ˈdwɪndl/",
+      "frequency_rank": 16000,
+      "senses": [
+        {
+          "pos": "v.",
+          "english": "to become gradually fewer or smaller",
+          "chinese": "逐渐减少，缩小",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "The town's population dwindled from 5,000 to 800 in thirty years.",
+              "translation": "三十年间，小镇人口从五千减少到八百。"
+            },
+            {
+              "text": "Their savings dwindled as the job search dragged on.",
+              "translation": "找工作的时间越拖越久，他们的积蓄也日渐减少。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "dwindle to nothing", "gloss": "逐渐消耗殆尽" },
+        { "text": "dwindling resources", "gloss": "日渐枯竭的资源" }
+      ],
+      "synonyms": ["shrink", "decline", "diminish"],
+      "antonyms": ["grow", "increase", "flourish"],
+      "word_family": [],
+      "forms": {
+        "past": "dwindled",
+        "past_participle": "dwindled",
+        "third_person": "dwindles",
+        "ing": "dwindling"
+      }
+    },
+    {
+      "word": "rigorous",
+      "phonetic": "/ˈrɪɡərəs/",
+      "frequency_rank": 6600,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "very careful, thorough, and strict",
+          "chinese": "严格的；缜密的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "The theory survived rigorous testing by independent labs.",
+              "translation": "该理论经受住了独立实验室的严格检验。"
+            },
+            {
+              "text": "Journalists are trained to apply rigorous fact-checking.",
+              "translation": "记者要接受严格的核实训练。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "rigorous testing", "gloss": "严格测试" },
+        { "text": "rigorous standards", "gloss": "严格的标准" }
+      ],
+      "synonyms": ["strict", "thorough", "exacting"],
+      "antonyms": ["lax", "loose", "cursory"],
+      "word_family": ["rigor n.", "rigorously adv."],
+      "forms": { "noun": "rigor", "adverb": "rigorously" }
+    },
+    {
+      "word": "coherent",
+      "phonetic": "/koʊˈhɪrənt/",
+      "frequency_rank": 6500,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "logically organized and easy to follow; clear",
+          "chinese": "连贯的，条理清晰的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "A good essay presents a coherent argument from start to finish.",
+              "translation": "好文章从头到尾都保持论点连贯。"
+            },
+            {
+              "text": "He was so tired that his answers were barely coherent.",
+              "translation": "他累得回答几乎语无伦次。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "a coherent argument", "gloss": "连贯的论证" },
+        { "text": "a coherent policy", "gloss": "连贯一致的政策" }
+      ],
+      "synonyms": ["logical", "consistent", "articulate"],
+      "antonyms": ["incoherent", "disjointed", "rambling"],
+      "word_family": ["coherence n.", "coherently adv.", "cohere v."],
+      "forms": { "noun": "coherence", "adverb": "coherently" }
+    },
+    {
+      "word": "diminish",
+      "phonetic": "/dɪˈmɪnɪʃ/",
+      "frequency_rank": 6800,
+      "senses": [
+        {
+          "pos": "v.",
+          "english": "to become or make smaller, weaker, or less important",
+          "chinese": "减少；（使）削弱",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Her enthusiasm for the project diminished after the third redesign.",
+              "translation": "第三次改版之后，她对项目的热情消退了。"
+            },
+            {
+              "text": "The medicine gradually diminishes the pain.",
+              "translation": "药物逐渐减轻了疼痛。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "diminish in importance", "gloss": "重要性下降" },
+        { "text": "diminishing returns", "gloss": "收益递减" }
+      ],
+      "synonyms": ["decrease", "lessen", "wane"],
+      "antonyms": ["increase", "grow", "intensify"],
+      "word_family": ["diminishing adj."],
+      "forms": {
+        "past": "diminished",
+        "past_participle": "diminished",
+        "third_person": "diminishes",
+        "ing": "diminishing"
+      }
+    },
+    {
+      "word": "endeavor",
+      "phonetic": "/ɪnˈdevər/",
+      "frequency_rank": 8000,
+      "senses": [
+        {
+          "pos": "n.",
+          "english": "a serious effort to achieve something",
+          "chinese": "努力，尝试",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Learning a language is a long-term endeavor, not a weekend project.",
+              "translation": "学一门语言是长期努力，不是周末项目。"
+            }
+          ]
+        },
+        {
+          "pos": "v.",
+          "english": "to try very hard to do something",
+          "chinese": "努力，尽力",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "The lab endeavored to reproduce the results for six months.",
+              "translation": "实验室花了六个月努力复现那些结果。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "a worthy endeavor", "gloss": "值得付出的事业" },
+        { "text": "endeavor to do sth", "gloss": "努力做某事" }
+      ],
+      "synonyms": ["effort", "undertaking", "striving"],
+      "antonyms": ["idleness", "apathy"],
+      "word_family": [],
+      "forms": {
+        "past": "endeavored",
+        "past_participle": "endeavored",
+        "third_person": "endeavors",
+        "ing": "endeavoring"
+      }
+    },
+    {
+      "word": "exhaustive",
+      "phonetic": "/ɪɡˈzɔːstɪv/",
+      "frequency_rank": 12000,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "including every possible detail; extremely thorough",
+          "chinese": "详尽无遗的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "The committee conducted an exhaustive review of every safety incident.",
+              "translation": "委员会对每一起安全事件做了详尽的审查。"
+            },
+            {
+              "text": "After an exhaustive search, the bug turned out to be a one-line config change.",
+              "translation": "一番地毯式排查后，问题竟是一行配置改动。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "an exhaustive search", "gloss": "穷尽式搜索" },
+        { "text": "an exhaustive list", "gloss": "详尽无遗的清单" }
+      ],
+      "synonyms": ["thorough", "comprehensive", "complete"],
+      "antonyms": ["partial", "cursory", "superficial"],
+      "word_family": ["exhaustively adv."],
+      "forms": { "adverb": "exhaustively" }
+    },
+    {
+      "word": "hinder",
+      "phonetic": "/ˈhɪndər/",
+      "frequency_rank": 9000,
+      "senses": [
+        {
+          "pos": "v.",
+          "english": "to make it harder for something to progress",
+          "chinese": "阻碍，妨碍",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Lack of sleep hinders concentration more than most people admit.",
+              "translation": "缺觉对专注力的妨碍比多数人承认的更严重。"
+            },
+            {
+              "text": "Heavy rain hindered the rescue efforts.",
+              "translation": "大雨阻碍了救援工作。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "hinder progress", "gloss": "阻碍进展" },
+        { "text": "hinder sb in doing sth", "gloss": "妨碍某人做某事" }
+      ],
+      "synonyms": ["hamper", "obstruct", "impede"],
+      "antonyms": ["help", "facilitate", "assist"],
+      "word_family": ["hindrance n."],
+      "forms": {
+        "past": "hindered",
+        "past_participle": "hindered",
+        "third_person": "hinders",
+        "ing": "hindering",
+        "noun": "hindrance"
+      }
+    },
+    {
+      "word": "imperative",
+      "phonetic": "/ɪmˈperətɪv/",
+      "frequency_rank": 6700,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "extremely important and necessary",
+          "chinese": "极重要的，必不可少的",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "It is imperative that we back up the database before the upgrade.",
+              "translation": "升级前我们必须备份数据库。"
+            },
+            {
+              "text": "In an emergency, clear communication is imperative.",
+              "translation": "紧急情况下，清晰的沟通至关重要。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "it is imperative that…", "gloss": "……是当务之急" },
+        { "text": "an imperative need", "gloss": "迫切的需要" }
+      ],
+      "synonyms": ["crucial", "vital", "essential"],
+      "antonyms": ["optional", "unnecessary", "dispensable"],
+      "word_family": ["imperatively adv."],
+      "forms": { "adverb": "imperatively" }
+    },
+    {
+      "word": "intricate",
+      "phonetic": "/ˈɪntrɪkət/",
+      "frequency_rank": 8600,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "having many small parts or details arranged in a complicated way",
+          "chinese": "错综复杂的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "The watch contains an intricate mechanism of tiny gears.",
+              "translation": "这块表里有一套由细小齿轮组成的复杂机芯。"
+            },
+            {
+              "text": "The plot is intricate, but the final chapter ties everything together.",
+              "translation": "情节错综复杂，但最后一章把所有线索收拢了。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "an intricate design", "gloss": "精巧繁复的设计" },
+        { "text": "an intricate plot", "gloss": "盘根错节的情节" }
+      ],
+      "synonyms": ["complex", "elaborate", "convoluted"],
+      "antonyms": ["simple", "plain", "straightforward"],
+      "word_family": ["intricately adv.", "intricacy n."],
+      "forms": { "adverb": "intricately", "noun": "intricacy" }
+    },
+    {
+      "word": "linger",
+      "phonetic": "/ˈlɪŋɡər/",
+      "frequency_rank": 8300,
+      "senses": [
+        {
+          "pos": "v.",
+          "english": "to stay somewhere longer than expected, or to continue to exist",
+          "chinese": "逗留；继续存留",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "The smell of coffee lingered in the kitchen long after breakfast.",
+              "translation": "早餐过后很久，厨房里还留着咖啡的香味。"
+            },
+            {
+              "text": "Doubts about the decision lingered for months.",
+              "translation": "对这个决定的疑虑萦绕了好几个月。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "linger over sth", "gloss": "在某事上流连/细细体会" },
+        { "text": "a lingering doubt", "gloss": "挥之不去的疑虑" }
+      ],
+      "synonyms": ["remain", "stay", "hang around"],
+      "antonyms": ["leave", "vanish", "disperse"],
+      "word_family": ["lingering adj."],
+      "forms": {
+        "past": "lingered",
+        "past_participle": "lingered",
+        "third_person": "lingers",
+        "ing": "lingering"
+      }
+    },
+    {
+      "word": "novice",
+      "phonetic": "/ˈnɑːvɪs/",
+      "frequency_rank": 10000,
+      "senses": [
+        {
+          "pos": "n.",
+          "english": "someone who is new and inexperienced at an activity",
+          "chinese": "新手，初学者",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "As a novice cook, she stuck to simple recipes.",
+              "translation": "作为厨房新手，她只敢做简单的菜。"
+            },
+            {
+              "text": "The course assumes you are a complete novice.",
+              "translation": "这门课程假设你完全是零基础。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "a complete novice", "gloss": "彻底的新手" },
+        { "text": "a novice at sth", "gloss": "某事上的新手" }
+      ],
+      "synonyms": ["beginner", "newcomer", "apprentice"],
+      "antonyms": ["expert", "veteran", "master"],
+      "word_family": [],
+      "forms": {}
+    },
+    {
+      "word": "obsolete",
+      "phonetic": "/ˌɑːbsəˈliːt/",
+      "frequency_rank": 8800,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "no longer used because something newer has replaced it",
+          "chinese": "过时的，被淘汰的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Fax machines are nearly obsolete in most offices.",
+              "translation": "在多数办公室里，传真机几乎已被淘汰。"
+            },
+            {
+              "text": "The update made the old file format obsolete.",
+              "translation": "这次更新让旧的文件格式作废了。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "become obsolete", "gloss": "被淘汰" },
+        { "text": "render sth obsolete", "gloss": "使某物过时" }
+      ],
+      "synonyms": ["outdated", "superseded", "antiquated"],
+      "antonyms": ["current", "modern", "state-of-the-art"],
+      "word_family": ["obsolescence n."],
+      "forms": { "noun": "obsolescence" }
+    },
+    {
+      "word": "outweigh",
+      "phonetic": "/ˌaʊtˈweɪ/",
+      "frequency_rank": 8500,
+      "senses": [
+        {
+          "pos": "v.",
+          "english": "to be more important or valuable than something else",
+          "chinese": "（在重要性或价值上）超过",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "The benefits of exercise far outweigh the costs.",
+              "translation": "锻炼的益处远大于代价。"
+            },
+            {
+              "text": "For many workers, flexibility outweighs salary.",
+              "translation": "对许多职场人来说，灵活性比薪水更重要。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "the benefits outweigh the risks", "gloss": "收益大于风险" }
+      ],
+      "synonyms": ["exceed", "surpass", "override"],
+      "antonyms": ["fall short of", "trail"],
+      "word_family": [],
+      "forms": {
+        "past": "outweighed",
+        "past_participle": "outweighed",
+        "third_person": "outweighs",
+        "ing": "outweighing"
+      }
+    },
+    {
+      "word": "pervasive",
+      "phonetic": "/pərˈveɪsɪv/",
+      "frequency_rank": 10000,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "present or felt everywhere",
+          "chinese": "无处不在的，弥漫的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "The influence of smartphones is pervasive in modern life.",
+              "translation": "智能手机的影响在现代生活中无处不在。"
+            },
+            {
+              "text": "A pervasive sense of unease settled over the team before the announcement.",
+              "translation": "公告发布前，一种弥漫的不安笼罩着团队。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "pervasive influence", "gloss": "无孔不入的影响" }
+      ],
+      "synonyms": ["widespread", "ubiquitous", "prevalent"],
+      "antonyms": ["rare", "localized", "contained"],
+      "word_family": ["pervasively adv."],
+      "forms": { "adverb": "pervasively" }
+    },
+    {
+      "word": "plausible",
+      "phonetic": "/ˈplɔːzəbl/",
+      "frequency_rank": 8300,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "seeming likely to be true, although you are not certain",
+          "chinese": "貌似有理的，貌似可信的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Her explanation sounded plausible, but nobody could verify it.",
+              "translation": "她的解释听着头头是道，但没人能核实。"
+            },
+            {
+              "text": "The police dismissed the most plausible theory too quickly.",
+              "translation": "警方过早排除了最合理的推断。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "a plausible explanation", "gloss": "貌似合理的解释" },
+        { "text": "a plausible excuse", "gloss": "说得过去的借口" }
+      ],
+      "synonyms": ["credible", "believable", "convincing"],
+      "antonyms": ["implausible", "far-fetched", "absurd"],
+      "word_family": ["plausibility n.", "plausibly adv.", "implausible adj."],
+      "forms": { "noun": "plausibility", "adverb": "plausibly" }
+    },
+    {
+      "word": "prevalent",
+      "phonetic": "/ˈprevələnt/",
+      "frequency_rank": 6900,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "common in a particular place or time",
+          "chinese": "普遍的，盛行的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Flu is most prevalent in the winter months.",
+              "translation": "流感在冬季最盛行。"
+            },
+            {
+              "text": "This view was prevalent among economists in the 1990s.",
+              "translation": "这种观点在九十年代的经济学家中很流行。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "widely prevalent", "gloss": "广泛存在" },
+        { "text": "prevalent in/among sth", "gloss": "在……中盛行" }
+      ],
+      "synonyms": ["common", "widespread", "commonplace"],
+      "antonyms": ["rare", "uncommon", "exceptional"],
+      "word_family": ["prevalence n."],
+      "forms": { "noun": "prevalence" }
+    },
+    {
+      "word": "refute",
+      "phonetic": "/rɪˈfjuːt/",
+      "frequency_rank": 11000,
+      "senses": [
+        {
+          "pos": "v.",
+          "english": "to prove that something is wrong",
+          "chinese": "反驳，驳斥",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "The data refutes the claim that the policy had no effect.",
+              "translation": "数据驳斥了“该政策毫无作用”的说法。"
+            },
+            {
+              "text": "He tried to refute the accusation with a stack of receipts.",
+              "translation": "他试图用一沓收据驳斥指控。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "refute an argument", "gloss": "驳斥论点" },
+        { "text": "refute a claim", "gloss": "驳斥说法" }
+      ],
+      "synonyms": ["disprove", "rebut", "contradict"],
+      "antonyms": ["confirm", "support", "uphold"],
+      "word_family": ["refutation n."],
+      "forms": {
+        "past": "refuted",
+        "past_participle": "refuted",
+        "third_person": "refutes",
+        "ing": "refuting",
+        "noun": "refutation"
+      }
+    },
+    {
+      "word": "spontaneous",
+      "phonetic": "/spɑːnˈteɪniəs/",
+      "frequency_rank": 7000,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "happening naturally, without being planned",
+          "chinese": "自发的，自然发生的",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "The crowd broke into spontaneous applause.",
+              "translation": "人群中自发地响起了掌声。"
+            },
+            {
+              "text": "Their road trip was entirely spontaneous—they left an hour after deciding.",
+              "translation": "他们的公路旅行完全说走就走——决定后一小时就出发了。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "spontaneous applause", "gloss": "自发的掌声" },
+        { "text": "a spontaneous decision", "gloss": "临时起意的决定" }
+      ],
+      "synonyms": ["impulsive", "unplanned", "natural"],
+      "antonyms": ["planned", "rehearsed", "deliberate"],
+      "word_family": ["spontaneously adv.", "spontaneity n."],
+      "forms": { "adverb": "spontaneously", "noun": "spontaneity" }
+    },
+    {
+      "word": "strenuous",
+      "phonetic": "/ˈstrenjuəs/",
+      "frequency_rank": 13000,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "needing a lot of effort or physical energy",
+          "chinese": "费力的；需要劲儿的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "The climb was more strenuous than we expected.",
+              "translation": "这次攀登比我们预想的更费力。"
+            },
+            {
+              "text": "Doctors advised him to avoid strenuous exercise for a month.",
+              "translation": "医生建议他一个月内避免剧烈运动。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "strenuous exercise", "gloss": "剧烈运动" },
+        { "text": "strenuous efforts", "gloss": "艰苦的努力" }
+      ],
+      "synonyms": ["arduous", "demanding", "taxing"],
+      "antonyms": ["easy", "gentle", "effortless"],
+      "word_family": ["strenuously adv."],
+      "forms": { "adverb": "strenuously" }
+    },
+    {
+      "word": "surge",
+      "phonetic": "/sɜːrdʒ/",
+      "frequency_rank": 5300,
+      "senses": [
+        {
+          "pos": "n.",
+          "english": "a sudden large increase",
+          "chinese": "激增；猛增",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "A surge in demand caught the factory off guard.",
+              "translation": "需求激增让工厂措手不及。"
+            }
+          ]
+        },
+        {
+          "pos": "v.",
+          "english": "to increase suddenly and strongly",
+          "chinese": "激增；汹涌",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "Prices surged after the supply disruption.",
+              "translation": "供应中断后价格猛涨。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "a surge in demand", "gloss": "需求激增" },
+        { "text": "a power surge", "gloss": "电涌" }
+      ],
+      "synonyms": ["spike", "jump", "rise sharply"],
+      "antonyms": ["drop", "decline", "dip"],
+      "word_family": [],
+      "forms": {
+        "past": "surged",
+        "past_participle": "surged",
+        "third_person": "surges",
+        "ing": "surging"
+      }
+    },
+    {
+      "word": "tangible",
+      "phonetic": "/ˈtændʒəbl/",
+      "frequency_rank": 7500,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "clear and real enough to be noticed or measured",
+          "chinese": "切实的，可感知的；有形的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "The training produced tangible improvements in response times.",
+              "translation": "培训带来了响应时间上看得见的改善。"
+            },
+            {
+              "text": "There is no tangible evidence linking him to the scene.",
+              "translation": "没有确凿证据将他现场联系起来。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "tangible benefits", "gloss": "实实在在的好处" },
+        { "text": "tangible evidence", "gloss": "确凿证据" }
+      ],
+      "synonyms": ["real", "concrete", "measurable"],
+      "antonyms": ["intangible", "abstract", "vague"],
+      "word_family": ["tangibly adv.", "intangible adj."],
+      "forms": { "adverb": "tangibly" }
+    },
+    {
+      "word": "tedious",
+      "phonetic": "/ˈtiːdiəs/",
+      "frequency_rank": 8000,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "boring because it lasts long or repeats",
+          "chinese": "单调乏味的，冗长无聊的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Filling out forms by hand is tedious work.",
+              "translation": "手工填表是件乏味的差事。"
+            },
+            {
+              "text": "The first chapters are tedious, but the ending rewards patience.",
+              "translation": "开头几章很磨人，但结尾对得起这份耐心。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "tedious work", "gloss": "枯燥的工作" },
+        { "text": "a tedious process", "gloss": "冗长乏味的过程" }
+      ],
+      "synonyms": ["boring", "monotonous", "dull"],
+      "antonyms": ["interesting", "engaging", "stimulating"],
+      "word_family": ["tediously adv.", "tedium n."],
+      "forms": { "adverb": "tediously", "noun": "tedium" }
+    },
+    {
+      "word": "thrive",
+      "phonetic": "/θraɪv/",
+      "frequency_rank": 6400,
+      "senses": [
+        {
+          "pos": "v.",
+          "english": "to grow, develop, or be successful",
+          "chinese": "茁壮成长；兴旺",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "These plants thrive in partial shade.",
+              "translation": "这些植物在半阴处长得旺盛。"
+            },
+            {
+              "text": "Small bookshops thrive in neighborhoods that value them.",
+              "translation": "小书店在珍视它们的社区里生意兴隆。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "thrive on sth", "gloss": "以……为乐/愈挫愈勇" },
+        { "text": "a thriving business", "gloss": "兴旺的生意" }
+      ],
+      "synonyms": ["flourish", "prosper", "boom"],
+      "antonyms": ["wither", "struggle", "decline"],
+      "word_family": ["thriving adj."],
+      "forms": {
+        "past": "thrived",
+        "past_participle": "thrived",
+        "third_person": "thrives",
+        "ing": "thriving"
+      }
+    },
+    {
+      "word": "trivial",
+      "phonetic": "/ˈtrɪviəl/",
+      "frequency_rank": 5800,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "not important or serious",
+          "chinese": "琐碎的，不重要的",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "It might look like a trivial fix, but it saved the release.",
+              "translation": "看着像个小修补，但它救了整个发布。"
+            },
+            {
+              "text": "They argued over trivial details while the deadline slipped.",
+              "translation": "截止日期一滑再滑，他们却在为琐碎细节争论。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "a trivial matter", "gloss": "无关紧要的小事" },
+        { "text": "a trivial fix", "gloss": "不起眼的修复" }
+      ],
+      "synonyms": ["minor", "insignificant", "petty"],
+      "antonyms": ["important", "crucial", "substantial"],
+      "word_family": ["trivially adv.", "triviality n."],
+      "forms": { "adverb": "trivially", "noun": "triviality" }
+    },
+    {
+      "word": "utter",
+      "phonetic": "/ˈʌtər/",
+      "frequency_rank": 3400,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "complete; absolute",
+          "chinese": "完全的，十足的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "The meeting was an utter waste of time.",
+              "translation": "那场会完全是浪费时间。"
+            }
+          ]
+        },
+        {
+          "pos": "v.",
+          "english": "to say something, especially quietly or with difficulty",
+          "chinese": "说出，吐出（字句）",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "She could barely utter a word during the interview.",
+              "translation": "面试中她几乎说不出一句话。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "an utter disaster", "gloss": "彻头彻尾的灾难" },
+        { "text": "not utter a word", "gloss": "一言不发" }
+      ],
+      "synonyms": ["complete", "absolute", "total"],
+      "antonyms": ["partial", "slight"],
+      "word_family": ["utterly adv.", "utterance n."],
+      "forms": {
+        "past": "uttered",
+        "past_participle": "uttered",
+        "third_person": "utters",
+        "ing": "uttering",
+        "adverb": "utterly",
+        "noun": "utterance"
+      }
+    },
+    {
+      "word": "verify",
+      "phonetic": "/ˈverɪfaɪ/",
+      "frequency_rank": 4200,
+      "senses": [
+        {
+          "pos": "v.",
+          "english": "to check that something is true or accurate",
+          "chinese": "核实，证实",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "Please verify that the backup completed before you leave.",
+              "translation": "离开前请确认备份已经完成。"
+            },
+            {
+              "text": "Independent labs verified the findings.",
+              "translation": "多家独立实验室证实了这些发现。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "verify a claim", "gloss": "核实说法" },
+        { "text": "verify with sb", "gloss": "与某人核实" }
+      ],
+      "synonyms": ["confirm", "check", "substantiate"],
+      "antonyms": ["assume", "guess", "disprove"],
+      "word_family": ["verification n.", "verifiable adj."],
+      "forms": {
+        "past": "verified",
+        "past_participle": "verified",
+        "third_person": "verifies",
+        "ing": "verifying",
+        "noun": "verification"
+      }
+    },
+    {
+      "word": "vigilant",
+      "phonetic": "/ˈvɪdʒɪlənt/",
+      "frequency_rank": 12000,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "carefully watching for possible danger or problems",
+          "chinese": "警惕的，警觉的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Parents must stay vigilant near open water.",
+              "translation": "在水边，家长必须时刻保持警惕。"
+            },
+            {
+              "text": "The team stayed vigilant for signs of another outage.",
+              "translation": "团队保持警觉，留意再次宕机的迹象。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "stay vigilant", "gloss": "保持警惕" },
+        { "text": "remain vigilant for sth", "gloss": "对某事保持戒备" }
+      ],
+      "synonyms": ["alert", "watchful", "attentive"],
+      "antonyms": ["careless", "inattentive", "oblivious"],
+      "word_family": ["vigilantly adv.", "vigilance n."],
+      "forms": { "adverb": "vigilantly", "noun": "vigilance" }
+    },
+    {
+      "word": "wary",
+      "phonetic": "/ˈweri/",
+      "frequency_rank": 7700,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "careful because you think something might be dangerous or wrong",
+          "chinese": "谨慎的，提防的",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "Investors are wary of promises that sound too good.",
+              "translation": "投资人对那些好得不像话的承诺心存戒备。"
+            },
+            {
+              "text": "She was wary of signing anything she had not read twice.",
+              "translation": "凡是没读过两遍的东西，她都不轻易签字。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "be wary of sth", "gloss": "提防某事" }
+      ],
+      "synonyms": ["cautious", "careful", "guarded"],
+      "antonyms": ["trusting", "reckless", "unwary"],
+      "word_family": ["warily adv.", "wariness n."],
+      "forms": { "adverb": "warily", "noun": "wariness" }
+    },
+    {
+      "word": "yield",
+      "phonetic": "/jiːld/",
+      "frequency_rank": 3300,
+      "senses": [
+        {
+          "pos": "v.",
+          "english": "to produce or give a result",
+          "chinese": "产生，出产",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "The new process yields twice as much output with the same energy.",
+              "translation": "新工艺用同样的能耗产出翻倍。"
+            }
+          ]
+        },
+        {
+          "pos": "v.",
+          "english": "to agree to do something you do not want to do, after resisting",
+          "chinese": "屈服，让步",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "After hours of questioning, he finally yielded and admitted the mistake.",
+              "translation": "几个小时盘问之后，他终于让步，承认了错误。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "yield results", "gloss": "产生结果" },
+        { "text": "yield to pressure", "gloss": "屈从于压力" }
+      ],
+      "synonyms": ["produce", "generate", "give way"],
+      "antonyms": ["withhold", "resist", "withstand"],
+      "word_family": [],
+      "forms": {
+        "past": "yielded",
+        "past_participle": "yielded",
+        "third_person": "yields",
+        "ing": "yielding"
+      }
+    }
+  ]
+}

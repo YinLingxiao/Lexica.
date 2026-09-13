@@ -1,0 +1,15 @@
+node_modules/
+/build/
+/.svelte-kit/
+/src-tauri/target/
+/src-tauri/gen/schemas/
+.DS_Store
+Thumbs.db
+vite.config.ts.timestamp-*
+
+/.codex-backups/
+/.claude/
+/test-results/
+/playwright-report/
+/data/*.db
+/data/*.zip
