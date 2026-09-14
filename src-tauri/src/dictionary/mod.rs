@@ -1,3 +1,4 @@
+pub mod bootstrap;
 pub mod engine;
 pub mod model;
 pub mod provider;

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { preferences } from '$lib/preferences.svelte';
 	import { dictionaryImport } from '$lib/import-state.svelte';
+	import { dictionarySetup, runDictionarySetup } from '$lib/dictionary-setup.svelte';
 	import { appInfo, importEcdict, errorMessage, isPreview, type AppInfo } from '$lib/api';
 	import Icon from '$lib/components/Icon.svelte';
 	let info = $state<AppInfo | null>(null);
@@ -28,8 +29,17 @@
 			dictionaryImport.running = false;
 		}
 	}
+	async function doDownload() {
+		if (dictionarySetup.active || isPreview()) return;
+		try {
+			await runDictionarySetup(true);
+			await refresh();
+		} catch {
+			/* overlay shows the error */
+		}
+	}
 	$effect(() => {
-		if (!dictionaryImport.running) void refresh();
+		if (!dictionaryImport.running && !dictionarySetup.active) void refresh();
 	});
 </script>
 
@@ -74,39 +84,61 @@
 		{:else if info}<div class="dictionary-info">
 				<div><strong>{info.word_count.toLocaleString()}</strong><span>entries</span></div>
 				<span class="badge"
-					>{isPreview() ? 'Preview · read-only' : info.fts_ok ? 'Index ready' : 'Index error'}</span
+					>{isPreview()
+						? 'Preview · read-only'
+						: info.dictionary_ready
+							? 'ECDICT ready'
+							: info.fts_ok
+								? 'Seed only'
+								: 'Index error'}</span
 				>
 			</div>
 		{:else}<p class="muted small">Loading…</p>{/if}
-		<label for="source-path">Import ECDICT (stardict.db)</label>
-		<form
-			class="import-row"
-			onsubmit={(e) => {
-				e.preventDefault();
-				void doImport();
-			}}
-		>
-			<input
-				id="source-path"
-				bind:value={dictionaryImport.sourcePath}
-				placeholder="D:\Dictionary\stardict.db"
-				disabled={dictionaryImport.running || isPreview()}
-				spellcheck="false"
-			/><button
-				class="primary"
-				disabled={!dictionaryImport.sourcePath.trim() || dictionaryImport.running || isPreview()}
-				><Icon name="download" size={15} />{dictionaryImport.running
-					? 'Importing…'
-					: 'Import'}</button
+		<p class="muted small dict-blurb">
+			Free ECDICT corpus (~3.4M entries, MIT). Downloaded to the app data folder on first launch.
+			<a
+				href="https://github.com/skywind3000/ECDICT/releases/tag/1.0.28"
+				target="_blank"
+				rel="noreferrer">Download page ↗</a
 			>
-		</form>
-		{#if dictionaryImport.running}<p class="import-note" role="status">
-				Writing entries — keep the app open. This can take a few minutes.
-			</p>{/if}{#if dictionaryImport.message}<p class="import-note" role="status">
-				{dictionaryImport.message}
-			</p>{/if}{#if dictionaryImport.error}<p class="error" role="alert">
-				{dictionaryImport.error}
-			</p>{/if}
+		</p>
+		<button
+			class="primary download-btn"
+			disabled={dictionarySetup.active || isPreview()}
+			onclick={doDownload}
+			><Icon name="download" size={15} />{info?.dictionary_ready
+				? 'Re-check dictionary'
+				: 'Download dictionary'}</button
+		>
+		<details class="advanced">
+			<summary>Import local stardict.db</summary>
+			<form
+				class="import-row"
+				onsubmit={(e) => {
+					e.preventDefault();
+					void doImport();
+				}}
+			>
+				<input
+					id="source-path"
+					bind:value={dictionaryImport.sourcePath}
+					placeholder="D:\Dictionary\stardict.db"
+					disabled={dictionaryImport.running || isPreview()}
+					spellcheck="false"
+				/><button
+					class="primary"
+					disabled={!dictionaryImport.sourcePath.trim() || dictionaryImport.running || isPreview()}
+					>{dictionaryImport.running ? 'Importing…' : 'Import'}</button
+				>
+			</form>
+			{#if dictionaryImport.running}<p class="import-note" role="status">
+					Writing entries — keep the app open.
+				</p>{/if}{#if dictionaryImport.message}<p class="import-note" role="status">
+					{dictionaryImport.message}
+				</p>{/if}{#if dictionaryImport.error}<p class="error" role="alert">
+					{dictionaryImport.error}
+				</p>{/if}
+		</details>
 	</section>
 	<section class="panel shortcuts">
 		<div class="section-heading"><h2>Shortcuts</h2></div>
@@ -194,11 +226,21 @@
 		font-size: 11px;
 		color: var(--muted);
 	}
-	.dictionary label {
-		display: block;
-		font-size: 11px;
+	.dict-blurb {
+		margin: 0 0 16px;
+		line-height: 1.7;
+	}
+	.download-btn {
+		width: 100%;
+		margin-bottom: 18px;
+	}
+	.advanced {
+		font-size: 12px;
 		color: var(--muted);
-		margin-bottom: 8px;
+	}
+	.advanced summary {
+		cursor: pointer;
+		margin-bottom: 10px;
 	}
 	.import-row {
 		display: flex;

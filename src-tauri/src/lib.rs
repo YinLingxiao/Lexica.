@@ -18,6 +18,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             commands::app_info,
             commands::import_ecdict,
+            commands::ensure_dictionary,
             commands::search_suggest,
             commands::lookup_word,
             commands::set_comprehension,

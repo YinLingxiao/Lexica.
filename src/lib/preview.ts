@@ -32,7 +32,12 @@ export async function previewInvoke(
 		.slice(0, Number(args.limit ?? 8));
 	switch (command) {
 		case 'app_info':
-			return { word_count: entries.length, schema_version: 3, fts_ok: true };
+			return {
+				word_count: entries.length,
+				schema_version: 3,
+				fts_ok: true,
+				dictionary_ready: true
+			};
 		case 'search_suggest':
 			return suggestions;
 		case 'lookup_word': {
@@ -71,6 +76,8 @@ export async function previewInvoke(
 					reviews: 0
 				};
 			});
+		case 'ensure_dictionary':
+			return { ready: true, word_count: entries.length, imported: 0, skipped: true };
 		default:
 			throw new Error('Browser preview is read-only. Use the desktop app for this action.');
 	}

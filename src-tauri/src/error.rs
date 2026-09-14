@@ -25,6 +25,12 @@ pub enum AppError {
 
     #[error("background task failed: {0}")]
     TaskJoin(String),
+
+    #[error("network error: {0}")]
+    Network(String),
+
+    #[error("I/O error: {0}")]
+    Io(String),
 }
 
 impl Serialize for AppError {
@@ -48,5 +54,7 @@ fn error_code(e: &AppError) -> &'static str {
         AppError::Review(_) => "review",
         AppError::LockPoisoned => "lock_poisoned",
         AppError::TaskJoin(_) => "task_join",
+        AppError::Network(_) => "network",
+        AppError::Io(_) => "io",
     }
 }

@@ -5,6 +5,7 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import { isPreview } from '$lib/api';
 	import { preferences, loadPreferences, applyPreferences } from '$lib/preferences.svelte';
+	import { dictionarySetup, runDictionarySetup } from '$lib/dictionary-setup.svelte';
 	let { children } = $props();
 	let ready = $state(false);
 	const navigation = [
@@ -18,6 +19,7 @@
 	onMount(() => {
 		loadPreferences();
 		ready = true;
+		void runDictionarySetup().catch(() => {});
 	});
 	$effect(() => {
 		if (ready) applyPreferences();
@@ -75,6 +77,38 @@
 		<div id="content" tabindex="-1">{@render children()}</div>
 	</div>
 </div>
+{#if dictionarySetup.active}<div
+		class="setup-overlay"
+		role="dialog"
+		aria-modal="true"
+		aria-labelledby="setup-title"
+	>
+		<div class="setup-card panel">
+			<div class="setup-icon"><Icon name="download" size={28} /></div>
+			<h2 id="setup-title">
+				{dictionarySetup.phase === 'error' ? 'Dictionary setup failed' : 'Setting up dictionary'}
+			</h2>
+			<p class="muted">{dictionarySetup.message || 'Preparing…'}</p>
+			{#if dictionarySetup.phase !== 'error'}<div class="setup-bar" aria-hidden="true">
+					<div
+						class="setup-fill"
+						class:indeterminate={dictionarySetup.progress == null}
+						style:width={dictionarySetup.progress != null
+							? `${Math.round(dictionarySetup.progress * 100)}%`
+							: undefined}
+					></div>
+				</div>
+				{#if dictionarySetup.progress != null}<span class="setup-pct"
+						>{Math.round(dictionarySetup.progress * 100)}%</span
+					>{/if}
+			{:else}<button class="primary" onclick={() => void runDictionarySetup(true).catch(() => {})}
+					>Retry</button
+				>{/if}
+			<p class="setup-note">
+				ECDICT (~200 MB download). Stored in the app data folder. Import may take several minutes.
+			</p>
+		</div>
+	</div>{/if}
 
 <style>
 	.app-shell {
@@ -211,5 +245,74 @@
 		.skip {
 			left: 10px;
 		}
+	}
+	.setup-overlay {
+		position: fixed;
+		inset: 0;
+		z-index: 80;
+		display: grid;
+		place-items: center;
+		padding: 24px;
+		background: color-mix(in srgb, var(--bg) 72%, transparent);
+		backdrop-filter: blur(6px);
+	}
+	.setup-card {
+		width: min(420px, 100%);
+		text-align: center;
+		padding: 32px 28px;
+	}
+	.setup-icon {
+		display: inline-flex;
+		color: var(--accent);
+		margin-bottom: 14px;
+	}
+	.setup-card h2 {
+		font-size: 18px;
+		margin-bottom: 8px;
+	}
+	.setup-card > p {
+		font-size: 13px;
+		white-space: pre-line;
+		overflow-wrap: anywhere;
+		margin-bottom: 18px;
+	}
+	.setup-bar {
+		height: 6px;
+		border-radius: 99px;
+		background: var(--line);
+		overflow: hidden;
+		margin-bottom: 10px;
+	}
+	.setup-fill {
+		height: 100%;
+		background: var(--accent);
+		border-radius: inherit;
+		transition: width 0.2s var(--ease);
+	}
+	.setup-fill.indeterminate {
+		width: 36%;
+		animation: setup-slide 1.1s var(--ease) infinite;
+	}
+	@keyframes setup-slide {
+		0% {
+			transform: translateX(-120%);
+		}
+		100% {
+			transform: translateX(320%);
+		}
+	}
+	.setup-pct {
+		display: block;
+		font-size: 11px;
+		color: var(--muted);
+		margin-bottom: 14px;
+	}
+	.setup-note {
+		font-size: 11px !important;
+		color: var(--muted);
+		margin: 18px 0 0 !important;
+	}
+	.setup-card .primary {
+		margin-top: 4px;
 	}
 </style>

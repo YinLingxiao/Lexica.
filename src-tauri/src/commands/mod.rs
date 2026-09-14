@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use chrono::{DateTime, Utc};
 use rusqlite::{Connection, OptionalExtension};
 use serde::Serialize;
-use tauri::State;
+use tauri::{Emitter, State};
 
 use crate::app::AppState;
 use crate::dictionary::model::{LookupOutcome, Suggestion};
@@ -87,12 +87,14 @@ pub struct AppInfo {
     pub schema_version: i64,
     pub word_count: i64,
     pub fts_ok: bool,
+    pub dictionary_ready: bool,
 }
 
 /// 冒烟命令：证明 IPC → Rust → SQLite（含 FTS5 虚拟表）全链路可用。
 #[tauri::command]
 pub async fn app_info(state: State<'_, AppState>) -> Result<AppInfo, AppError> {
-    with_db(&state, |conn| {
+    let db_path = state.db_path.clone();
+    with_db(&state, move |conn| {
         let schema_version: i64 = conn
             .query_row("SELECT user_version FROM pragma_user_version", [], |r| {
                 r.get(0)
@@ -107,13 +109,51 @@ pub async fn app_info(state: State<'_, AppState>) -> Result<AppInfo, AppError> {
             })
             .optional()
             .is_ok();
+        let dir = db_path
+            .parent()
+            .map(|p| p.to_path_buf())
+            .unwrap_or_else(|| PathBuf::from("."));
+        let dictionary_ready = dir.join("ecdict.ok").is_file()
+            || conn
+                .query_row(
+                    "SELECT COUNT(*) FROM words WHERE source = 'ecdict'",
+                    [],
+                    |r| r.get::<_, i64>(0),
+                )
+                .map(|n| n >= 1_000_000)
+                .unwrap_or(false);
         Ok(AppInfo {
             schema_version,
             word_count,
             fts_ok,
+            dictionary_ready,
         })
     })
     .await
+}
+
+/// Download ECDICT when missing, then import into the local database.
+#[tauri::command]
+pub async fn ensure_dictionary(
+    app: tauri::AppHandle,
+    state: State<'_, AppState>,
+) -> Result<crate::dictionary::bootstrap::EnsureDictionaryResult, AppError> {
+    let db_path = state.db_path.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        crate::dictionary::bootstrap::ensure(&app, &db_path).or_else(|e| {
+            let _ = app.emit(
+                "dictionary-setup",
+                crate::dictionary::bootstrap::SetupProgress {
+                    phase: crate::dictionary::bootstrap::SetupPhase::Error,
+                    progress: None,
+                    message: e.to_string(),
+                },
+            );
+            Err(e)
+        })
+    })
+    .await
+    .map_err(|e| AppError::TaskJoin(e.to_string()))?
 }
 
 /// 导入 ECDICT 全量词库（MIT，stardict.db）。
@@ -132,6 +172,18 @@ pub async fn import_ecdict(
         };
         let conn = crate::database::open(&db_path)?;
         let imported = provider.import(&conn)?;
+        let ecdict: i64 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM words WHERE source = 'ecdict'",
+                [],
+                |r| r.get(0),
+            )
+            .unwrap_or(0);
+        if ecdict >= 1_000_000 {
+            if let Some(dir) = db_path.parent() {
+                let _ = std::fs::write(dir.join("ecdict.ok"), b"1");
+            }
+        }
         Ok(imported)
     })
     .await

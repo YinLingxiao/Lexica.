@@ -67,6 +67,7 @@ export interface AppInfo {
 	schema_version: number;
 	word_count: number;
 	fts_ok: boolean;
+	dictionary_ready: boolean;
 }
 
 export interface Suggestion {
@@ -151,6 +152,27 @@ export async function appInfo(): Promise<AppInfo> {
 /** Imports the full ECDICT database (stardict.db); returns newly added entries. Takes minutes. */
 export async function importEcdict(sourcePath: string): Promise<number> {
 	return invoke<number>('import_ecdict', { sourcePath });
+}
+
+export type SetupPhase =
+	'checking' | 'downloading' | 'extracting' | 'importing' | 'ready' | 'error';
+
+export interface SetupProgress {
+	phase: SetupPhase;
+	progress: number | null;
+	message: string;
+}
+
+export interface EnsureDictionaryResult {
+	ready: boolean;
+	word_count: number;
+	imported: number;
+	skipped: boolean;
+}
+
+/** Download ECDICT when missing, then import. Emits `dictionary-setup` progress events. */
+export async function ensureDictionary(): Promise<EnsureDictionaryResult> {
+	return invoke<EnsureDictionaryResult>('ensure_dictionary');
 }
 
 export async function searchSuggest(query: string, limit = 8): Promise<Suggestion[]> {
