@@ -204,14 +204,38 @@ cargo run --release --bin import-ecdict -- <stardict.db> <lexica.db>
 
 ## 发布
 
-推一个 `v*` 标签即可，GitHub Actions 会自动在 Windows 上构建、跑检查、创建 Release 并上传安装包：
+> ⚠️ **本仓库不使用 GitHub Actions。**
+>
+> 仓库名以点结尾（`Lexica.`），而 Windows runner 的工作目录固定为 `D:\a\<仓库名>\<仓库名>`。
+> Windows 无法创建以点结尾的目录，所以 `actions/checkout` 会在第一步就报：
+>
+> ```
+> ##[error]Directory 'D:\a\Lexica.\Lexica.' does not exist
+> ```
+>
+> 这与 workflow 写法无关，是 runner 工作目录的硬限制。若将来仓库改名，可以再启用 CI。
+
+改用本地脚本发布：
 
 ```bash
-git tag v0.2.0
-git push origin v0.2.0
+npm run tauri build                  # 构建 MSI 与 NSIS
+node scripts/publish-release.mjs     # 创建/更新 Release 并上传产物
 ```
 
-工作流见 [`.github/workflows/release.yml`](.github/workflows/release.yml)。除了带版本号的产物，它还会额外上传一份固定文件名的副本（`Lexica-setup.exe` / `Lexica.msi`），这样 `releases/latest/download/<固定名>` 永远指向最新版本，下载页不需要随版本改链接。
+脚本会读取 `src-tauri/tauri.conf.json` 的版本号，找到或创建 `v<版本>` 的 Release，上传带版本号的产物，再额外上传一份**固定文件名**的副本（`Lexica-setup.exe` / `Lexica.msi`），使 `releases/latest/download/<固定名>` 永远指向最新版本——下载页不需要随版本改链接。
+
+Release 说明来自 [`docs/release-notes-template.md`](docs/release-notes-template.md)，其中 `{{VERSION}}` 与 `{{TAG}}` 会被自动替换。
+
+常用参数：
+
+```bash
+node scripts/publish-release.mjs --skip-build      # 复用已有产物，不重新构建
+node scripts/publish-release.mjs --replace         # 覆盖同名资源（重传）
+node scripts/publish-release.mjs --tag v0.2.0      # 指定 tag（默认 v<版本>）
+node scripts/publish-release.mjs --notes my.md     # 指定说明文件
+```
+
+凭据优先读环境变量 `GITHUB_TOKEN`；没有则从 Git 凭据管理器读取，Windows 上通常已登录，无需额外配置。
 
 ---
 
