@@ -1,11 +1,98 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { openUrl } from '@tauri-apps/plugin-opener';
 	import { preferences } from '$lib/preferences.svelte';
 	import { dictionaryImport } from '$lib/import-state.svelte';
 	import { dictionarySetup, runDictionarySetup } from '$lib/dictionary-setup.svelte';
-	import { appInfo, importEcdict, errorMessage, isPreview, type AppInfo } from '$lib/api';
+	import {
+		appInfo,
+		importEcdict,
+		aiConfigGet,
+		aiConfigSave,
+		aiTestConnection,
+		errorMessage,
+		isPreview,
+		type AppInfo
+	} from '$lib/api';
 	import Icon from '$lib/components/Icon.svelte';
 	let info = $state<AppInfo | null>(null);
 	let error = $state('');
+	let logoError = $state('');
+
+	async function openGithub(event: MouseEvent) {
+		if (isPreview()) return;
+		event.preventDefault();
+		logoError = '';
+		try {
+			await openUrl('https://github.com/YinLingxiao');
+		} catch (cause) {
+			logoError = `Could not open GitHub: ${errorMessage(cause)}`;
+		}
+	}
+
+	// AI 例句（可选，默认关闭）。密钥只在 Rust 端的 Windows 凭据管理器里；
+	// 前端只持有输入框里的临时值，保存后立即清空。
+	let ai = $state({
+		enabled: false,
+		baseUrl: 'https://api.deepseek.com/v1',
+		model: 'deepseek-chat',
+		key: '',
+		hasKey: false
+	});
+	let aiSaving = $state(false);
+	let aiTesting = $state(false);
+	let aiMessage = $state('');
+	let aiError = $state('');
+
+	async function loadAi() {
+		try {
+			const cfg = await aiConfigGet();
+			ai.enabled = cfg.enabled;
+			ai.baseUrl = cfg.base_url;
+			ai.model = cfg.model;
+			ai.hasKey = cfg.has_key;
+			ai.key = '';
+		} catch {
+			/* AI 配置读取失败不打扰其他设置 */
+		}
+	}
+
+	async function saveAi(keyAction: 'keep' | 'set' | 'delete') {
+		if (aiSaving || isPreview()) return;
+		aiSaving = true;
+		aiMessage = '';
+		aiError = '';
+		try {
+			const key = keyAction === 'set' ? ai.key : keyAction === 'delete' ? '' : null;
+			const cfg = await aiConfigSave(ai.enabled, ai.baseUrl, ai.model, key);
+			ai.enabled = cfg.enabled;
+			ai.baseUrl = cfg.base_url;
+			ai.model = cfg.model;
+			ai.hasKey = cfg.has_key;
+			ai.key = '';
+			aiMessage = 'AI settings saved.';
+		} catch (e) {
+			aiError = errorMessage(e);
+		} finally {
+			aiSaving = false;
+		}
+	}
+
+	async function testAi() {
+		if (aiTesting || isPreview()) return;
+		aiTesting = true;
+		aiMessage = '';
+		aiError = '';
+		try {
+			await aiTestConnection();
+			aiMessage = 'Connection OK.';
+		} catch (e) {
+			aiError = errorMessage(e);
+		} finally {
+			aiTesting = false;
+		}
+	}
+
 	async function refresh() {
 		error = '';
 		try {
@@ -14,6 +101,9 @@
 			error = errorMessage(e);
 		}
 	}
+	onMount(() => {
+		void loadAi();
+	});
 	async function doImport() {
 		if (!dictionaryImport.sourcePath.trim() || dictionaryImport.running) return;
 		dictionaryImport.running = true;
@@ -140,6 +230,76 @@
 				</p>{/if}
 		</details>
 	</section>
+	<section class="panel ai" id="ai-examples">
+		<div class="section-heading"><h2>DeepSeek example sentences</h2></div>
+		<p class="muted small ai-blurb">
+			DeepSeek is preconfigured and remains off until you add an API key and enable it. When you look
+			up a word with no dictionary example, it generates a short sentence immediately. In review,
+			AI supplies the fill-in-the-blank sentences. Only the word and one
+			definition are sent — notes and learning history stay local. The key is stored in the Windows
+			credential manager, never in the database.
+		</p>
+		<div class="setting-row">
+			<h3>Enable</h3>
+			<div class="segmented">
+				<button
+					aria-pressed={!ai.enabled}
+					class:chosen={!ai.enabled}
+					onclick={() => (ai.enabled = false)}>Off</button
+				><button
+					aria-pressed={ai.enabled}
+					class:chosen={ai.enabled}
+					onclick={() => (ai.enabled = true)}>On</button
+				>
+			</div>
+		</div>
+		{#if ai.enabled}
+			<div class="ai-fields">
+				<label>
+					<span>Service address (API base URL)</span>
+					<input
+						bind:value={ai.baseUrl}
+						placeholder="https://api.deepseek.com/v1"
+						spellcheck="false"
+						disabled={aiSaving}
+					/>
+				</label>
+				<label>
+					<span>Model</span>
+					<input
+						bind:value={ai.model}
+						placeholder="deepseek-chat"
+						spellcheck="false"
+						disabled={aiSaving}
+					/>
+				</label>
+				<label>
+					<span>API key{#if ai.hasKey}<em class="muted"> · stored</em>{/if}</span>
+					<input
+						type="password"
+						bind:value={ai.key}
+						placeholder={ai.hasKey ? 'Leave empty to keep the stored key' : 'Paste API key'}
+						spellcheck="false"
+						autocomplete="off"
+						disabled={aiSaving}
+					/>
+				</label>
+				<div class="ai-actions">
+					<button disabled={aiSaving} onclick={() => saveAi(ai.key.trim() ? 'set' : 'keep')}
+						>{aiSaving ? 'Saving…' : 'Save'}</button
+					><button class="ghost" disabled={aiTesting || aiSaving} onclick={testAi}
+						>{aiTesting ? 'Testing…' : 'Test connection'}</button
+					>{#if ai.hasKey}<button
+							class="ghost"
+							disabled={aiSaving}
+							onclick={() => saveAi('delete')}>Remove key</button
+						>{/if}
+				</div>
+				{#if aiMessage}<p class="import-note" role="status">{aiMessage}</p>{/if}
+				{#if aiError}<p class="error" role="alert">{aiError}</p>{/if}
+			</div>
+		{/if}
+	</section>
 	<section class="panel shortcuts">
 		<div class="section-heading"><h2>Shortcuts</h2></div>
 		<dl>
@@ -156,6 +316,21 @@
 		Dictionary, bookmarks, notes and learning records stay on this device. Pronunciation uses the
 		system offline English voice.
 	</p>
+	<div class="credit">
+		<a
+			href="https://github.com/YinLingxiao"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="credit-logo"
+			aria-label="Visit Yin Lingxiao on GitHub"
+			aria-describedby="credit-tip"
+			onclick={openGithub}
+		>
+			<span class="credit-mark" aria-hidden="true"></span>
+			<span class="tooltip" id="credit-tip" role="tooltip">Designed by Y.I.A.</span>
+		</a>
+	</div>
+	{#if logoError}<p class="logo-error" role="alert">{logoError}</p>{/if}
 </main>
 
 <style>
@@ -263,6 +438,40 @@
 	.dictionary .error {
 		margin-top: 14px;
 	}
+	.ai-blurb {
+		line-height: 1.7;
+		margin: 0 0 6px;
+	}
+	.ai-fields {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+		padding-top: 14px;
+	}
+	.ai-fields label {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		font-size: 12px;
+	}
+	.ai-fields label span {
+		color: var(--muted);
+	}
+	.ai-fields input {
+		font-size: 13px;
+	}
+	.ai-fields em {
+		font-style: normal;
+		font-size: 11px;
+	}
+	.ai-actions {
+		display: flex;
+		gap: 8px;
+		flex-wrap: wrap;
+	}
+	.ai-actions button {
+		font-size: 12px;
+	}
 	.shortcuts dl {
 		margin: 0;
 	}
@@ -295,6 +504,70 @@
 		line-height: 2;
 		margin: 28px auto 0;
 		max-width: 460px;
+	}
+	.credit {
+		display: flex;
+		justify-content: center;
+		margin-top: 48px;
+		padding-bottom: 12px;
+	}
+	.credit-logo {
+		position: relative;
+		display: inline-block;
+		border: 0;
+		border-radius: 12px;
+		background: none;
+		padding: 0;
+		cursor: pointer;
+		text-decoration: none;
+	}
+	.credit-logo:focus-visible {
+		outline: 2px solid var(--fg);
+		outline-offset: 6px;
+	}
+	.credit-mark {
+		display: block;
+		width: min(160px, 50vw);
+		aspect-ratio: 1206 / 1304;
+		background: var(--fg);
+		-webkit-mask: url('/mogian-logo-cutout.png') center / contain no-repeat;
+		mask: url('/mogian-logo-cutout.png') center / contain no-repeat;
+	}
+	.credit-logo .tooltip {
+		position: absolute;
+		bottom: calc(100% + 10px);
+		left: 50%;
+		transform: translate(-50%, 4px);
+		opacity: 0;
+		pointer-events: none;
+		background: var(--fg);
+		color: var(--bg);
+		font-size: 11px;
+		white-space: nowrap;
+		padding: 6px 10px;
+		border-radius: 6px;
+		transition:
+			opacity 0.16s var(--ease),
+			transform 0.16s var(--ease);
+	}
+	.credit-logo .tooltip::after {
+		content: '';
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		transform: translateX(-50%);
+		border: 5px solid transparent;
+		border-top-color: var(--fg);
+	}
+	.credit-logo:hover .tooltip,
+	.credit-logo:focus-visible .tooltip {
+		opacity: 1;
+		transform: translate(-50%, 0);
+	}
+	.logo-error {
+		color: var(--danger);
+		font-size: 12px;
+		text-align: center;
 	}
 	@media (max-width: 600px) {
 		.setting-row {

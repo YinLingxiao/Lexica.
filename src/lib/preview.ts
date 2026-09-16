@@ -78,6 +78,15 @@ export async function previewInvoke(
 			});
 		case 'ensure_dictionary':
 			return { ready: true, word_count: entries.length, imported: 0, skipped: true };
+		case 'review_group':
+			return [];
+		case 'ai_config_get':
+			return {
+				enabled: false,
+				base_url: 'https://api.deepseek.com/v1',
+				model: 'deepseek-chat',
+				has_key: false
+			};
 		default:
 			throw new Error('Browser preview is read-only. Use the desktop app for this action.');
 	}

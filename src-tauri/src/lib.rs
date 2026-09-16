@@ -1,3 +1,4 @@
+pub mod ai;
 pub mod app;
 pub mod commands;
 pub mod database;
@@ -11,6 +12,7 @@ pub mod review;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+		.plugin(tauri_plugin_opener::init())
         .setup(|builder| {
             app::setup(builder)?;
             Ok(())
@@ -27,6 +29,13 @@ pub fn run() {
             commands::set_word_ignored,
             commands::rebuild_memory_projection,
             commands::review_queue,
+            commands::review_group,
+            commands::practice_check,
+            commands::practice_hint,
+            commands::ai_config_get,
+            commands::ai_config_save,
+            commands::ai_test_connection,
+            commands::ai_generate_examples,
             commands::start_review_item,
             commands::request_hint,
             commands::submit_review,

@@ -36,6 +36,9 @@ unicode-normalization = "0.1"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
 zip = { version = "2", default-features = false, features = ["deflate"] }
 thiserror = "2"
+# AI API 密钥存 Windows 凭据管理器（绝不入库/日志）。
+keyring = { version = "3", features = ["windows-native"] }
+tauri-plugin-opener = "2.5.5"
 
 [dev-dependencies]
 tempfile = "3"

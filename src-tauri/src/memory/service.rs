@@ -18,8 +18,8 @@ pub const VISIT_MERGE_WINDOW_MS: i64 = 30 * 60_000;
 /// 复习队列的呈现过滤：只显示最近有活动的词，防陈年词淹没计数。
 pub const QUEUE_ACTIVE_WINDOW_MS: i64 = 60 * 86_400_000;
 
-/// 单次复习会话上限（无每日任务——这是上限，不是目标）。
-pub const REVIEW_SESSION_LIMIT: usize = 12;
+/// 单次复习会话上限 = 每组最多 10 词（无每日任务——这是上限，不是目标）。
+pub const REVIEW_SESSION_LIMIT: usize = 10;
 
 /// 到期词（fading 列表 / 统计用；不含词文本——由 commands 从 dictionary 补齐）。
 #[derive(Debug, Clone, Serialize)]

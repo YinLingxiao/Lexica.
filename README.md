@@ -35,7 +35,20 @@ cargo build --release --features custom-protocol --bin lexica
 
 Windows 可执行文件：`src-tauri/target/release/lexica.exe`。`custom-protocol` 保证前端资源内嵌，不依赖开发服务器。
 
-需要安装包时运行 `npm run tauri build`。
+需要 Windows 安装包时，在项目根目录运行：
+
+```bash
+npm install
+npm run tauri build
+```
+
+成功后会生成：
+
+- `src-tauri/target/release/lexica.exe`：免安装的独立桌面程序。
+- `src-tauri/target/release/bundle/msi/Lexica_0.1.0_x64_en-US.msi`：适合 Windows 企业部署和标准安装流程的 MSI。
+- `src-tauri/target/release/bundle/nsis/Lexica_0.1.0_x64-setup.exe`：适合普通用户双击安装的 Setup EXE。
+
+版本号和产品名来自 `src-tauri/tauri.conf.json`。发布新版本前修改其中的 `version`，再重新运行构建命令。当前安装包没有代码签名，分发到其他电脑时 Windows 可能显示“未知发布者”；正式公开发布建议为 MSI 和 EXE 配置代码签名证书。
 
 ## 测试
 

@@ -337,18 +337,28 @@ kbd {
 		transform: translateY(6px);
 	}
 }
-/* Theme switch: the incoming palette grows from the toggle that was clicked. */
+/* Theme switch, direction-aware.
+   dark→light (expand): the new light snapshot grows from the click point.
+   light→dark (shrink): the old light snapshot shrinks into the click point,
+   uncovering the dark snapshot beneath it. */
 html[data-revealing]::view-transition-old(root),
 html[data-revealing]::view-transition-new(root) {
 	animation: none;
 	mix-blend-mode: normal;
 }
-html[data-revealing]::view-transition-old(root) {
+html[data-revealing='expand']::view-transition-old(root) {
 	z-index: 0;
 }
-html[data-revealing]::view-transition-new(root) {
+html[data-revealing='expand']::view-transition-new(root) {
 	z-index: 1;
 	animation: theme-reveal 0.5s var(--ease) both;
+}
+html[data-revealing='shrink']::view-transition-old(root) {
+	z-index: 1;
+	animation: theme-shrink 0.5s var(--ease) both;
+}
+html[data-revealing='shrink']::view-transition-new(root) {
+	z-index: 0;
 }
 @keyframes theme-reveal {
 	from {
@@ -356,6 +366,14 @@ html[data-revealing]::view-transition-new(root) {
 	}
 	to {
 		clip-path: circle(var(--reveal-r) at var(--reveal-x) var(--reveal-y));
+	}
+}
+@keyframes theme-shrink {
+	from {
+		clip-path: circle(var(--reveal-r) at var(--reveal-x) var(--reveal-y));
+	}
+	to {
+		clip-path: circle(0 at var(--reveal-x) var(--reveal-y));
 	}
 }
 ::selection {

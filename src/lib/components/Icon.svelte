@@ -16,7 +16,9 @@
 		copy: 'M8 8h12v13H8V8Z M16 8V3H3v13h5',
 		back: 'M20 12H4m6-6-6 6 6 6',
 		download: 'M12 3v12m-5-5 5 5 5-5 M4 16v5h16v-5',
-		spark: 'm12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z'
+		spark: 'm12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z',
+		'chevron-left': 'm15 18-6-6 6-6',
+		'chevron-right': 'm9 18 6-6-6-6'
 	};
 </script>
 

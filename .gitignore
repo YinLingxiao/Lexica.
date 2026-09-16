@@ -11,5 +11,4 @@ vite.config.ts.timestamp-*
 /.claude/
 /test-results/
 /playwright-report/
-/data/*.db
-/data/*.zip
+/data/

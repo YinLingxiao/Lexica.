@@ -204,12 +204,26 @@ export async function setWordIgnored(wordId: number, ignored: boolean): Promise<
 
 // ── Review ────────────────────────────────────────────────
 
+/** Prompt type (explicit, not inferred from example_id). */
+export type PromptKind = 'cloze' | 'definition' | 'definition_zh';
+/** Prompt source: dictionary original or AI supplement. */
+export type PromptSource = 'dictionary' | 'ai';
+
 export interface ReviewItem {
 	word_id: number;
-	/** Cloze sentence, or the English definition when no example exists. */
+	/** Cloze sentence, English definition, or Chinese definition fallback. */
 	prompt: string;
+	kind: PromptKind;
+	source: PromptSource;
 	sense_id: number | null;
+	/** Always null for AI prompts — dictionary example ids are never faked. */
 	example_id: number | null;
+}
+
+/** Read-only review group entry: full entry for browsing + the local prompt. */
+export interface ReviewGroupEntry {
+	item: ReviewItem;
+	entry: WordEntry;
 }
 
 export type Hint =
@@ -250,12 +264,82 @@ export async function reviewQueue(): Promise<ReviewItem[]> {
 	return invoke<ReviewItem[]>('review_queue');
 }
 
+/** Read-only group of due words (≤10): full entries + local prompts. No side effects. */
+export async function reviewGroup(): Promise<ReviewGroupEntry[]> {
+	return invoke<ReviewGroupEntry[]>('review_group');
+}
+
 export async function startReviewItem(item: ReviewItem): Promise<number> {
 	return invoke<number>('start_review_item', {
 		wordId: item.word_id,
 		senseId: item.sense_id,
 		exampleId: item.example_id
 	});
+}
+
+/** In-group retry grading: read-only, reuses the Rust grader, never double-counts. */
+export async function practiceCheck(
+	wordId: number,
+	answer: string | null
+): Promise<{ correct: boolean }> {
+	return invoke('practice_check', { wordId, answer });
+}
+
+/** In-group retry hints: read-only, same construction as the formal flow. */
+export async function practiceHint(
+	wordId: number,
+	senseId: number | null,
+	hintNo: number
+): Promise<Hint> {
+	return invoke('practice_hint', { wordId, senseId, hintNo });
+}
+
+// ── AI example sentences (optional, off by default) ───────
+
+export interface AiConfigView {
+	enabled: boolean;
+	base_url: string;
+	model: string;
+	/** Whether a key is stored — the key itself is never returned. */
+	has_key: boolean;
+}
+
+export interface AiExample {
+	word_id: number;
+	sense_id: number | null;
+	/** Validated, target-word-blanked sentence, ready to use as a prompt. */
+	sentence: string;
+}
+
+export interface AiGenItem {
+	word_id: number;
+	sense_id: number | null;
+}
+
+export async function aiConfigGet(): Promise<AiConfigView> {
+	return invoke<AiConfigView>('ai_config_get');
+}
+
+/**
+ * Saves AI settings. `key`: null keeps the stored key, '' deletes it,
+ * a non-empty string replaces it. The key lives in the OS credential store.
+ */
+export async function aiConfigSave(
+	enabled: boolean,
+	baseUrl: string,
+	model: string,
+	key: string | null
+): Promise<AiConfigView> {
+	return invoke<AiConfigView>('ai_config_save', { enabled, baseUrl, model, key });
+}
+
+export async function aiTestConnection(): Promise<void> {
+	return invoke('ai_test_connection');
+}
+
+/** Generate and cache cloze-ready AI examples. Callers choose when generation is needed. */
+export async function aiGenerateExamples(items: AiGenItem[]): Promise<AiExample[]> {
+	return invoke<AiExample[]>('ai_generate_examples', { items });
 }
 
 export async function requestHint(reviewId: number, hintNo: number): Promise<Hint> {

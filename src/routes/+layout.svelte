@@ -8,6 +8,9 @@
 	import { dictionarySetup, runDictionarySetup } from '$lib/dictionary-setup.svelte';
 	let { children } = $props();
 	let ready = $state(false);
+	let sidebarCollapsed = $state(false);
+	let sidebarAnimated = $state(false);
+	const sidebarPreferenceKey = 'lexica.sidebar-collapsed';
 	const navigation = [
 		{ href: '/', label: 'Search', icon: 'search' },
 		{ href: '/library', label: 'Words', icon: 'bookmark' },
@@ -18,13 +21,31 @@
 	const title = $derived(navigation.find((n) => n.href === page.url.pathname)?.label ?? 'Search');
 	onMount(() => {
 		loadPreferences();
+		try {
+			sidebarCollapsed = localStorage.getItem(sidebarPreferenceKey) === '1';
+		} catch {
+			/* Storage may be unavailable; the expanded default remains usable. */
+		}
 		ready = true;
 		void runDictionarySetup().catch(() => {});
 	});
+	function toggleSidebar() {
+		sidebarAnimated = true;
+		sidebarCollapsed = !sidebarCollapsed;
+		try {
+			localStorage.setItem(sidebarPreferenceKey, sidebarCollapsed ? '1' : '0');
+		} catch {
+			/* The current session can still use the collapsed state. */
+		}
+	}
 	$effect(() => {
 		if (ready) applyPreferences();
 	});
-	/** Expands the incoming theme as a circle centred on the toggle that was clicked. */
+	/** Directional theme reveal. dark→light: the light snapshot grows from the
+	 * click point; light→dark: the light snapshot shrinks into it, uncovering
+	 * dark. Keyboard activation falls back to the button centre; rapid clicks
+	 * keep only the newest transition's cleanup marker. */
+	let revealSeq = 0;
 	function toggleTheme(event: MouseEvent) {
 		const dark =
 			preferences.theme === 'dark' ||
@@ -40,37 +61,61 @@
 			return;
 		}
 		const box = (event.currentTarget as HTMLElement).getBoundingClientRect();
-		const x = box.left + box.width / 2;
-		const y = box.top + box.height / 2;
+		// Mouse clicks reveal from the pointer; keyboard-activated clicks (detail 0
+		// or zero coordinates) fall back to the button centre.
+		const keyed = event.detail === 0 || (event.clientX === 0 && event.clientY === 0);
+		const x = keyed ? box.left + box.width / 2 : event.clientX;
+		const y = keyed ? box.top + box.height / 2 : event.clientY;
 		root.style.setProperty('--reveal-x', `${x}px`);
 		root.style.setProperty('--reveal-y', `${y}px`);
 		root.style.setProperty(
 			'--reveal-r',
 			`${Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))}px`
 		);
-		root.dataset.revealing = '';
-		document.startViewTransition(apply).finished.finally(() => delete root.dataset.revealing);
+		root.dataset.revealing = dark ? 'expand' : 'shrink';
+		const seq = ++revealSeq;
+		document
+			.startViewTransition(apply)
+			.finished.finally(() => {
+				// A newer transition owns the marker now; leave it for its own cleanup.
+				if (seq === revealSeq) delete root.dataset.revealing;
+			});
 	}
 </script>
 
 <svelte:head><title>{title} · Lexica</title></svelte:head>
 <a class="skip" href="#content">Skip to content</a>
-<div class="app-shell">
-	<aside class="sidebar">
-		<a href="/" class="brand" aria-label="Lexica home">lexica<span>.</span></a>
-		<nav aria-label="Main">
+<div class="app-shell" class:sidebar-animated={sidebarAnimated}>
+	<aside class="sidebar" class:collapsed={sidebarCollapsed}>
+		<div class="sidebar-head">
+			<a href="/" class="brand" aria-label="Lexica home" title="Lexica home"
+				><span class="brand-wordmark" aria-hidden="true">l<span class="brand-middle"><span>exica</span></span><span class="brand-dot">.</span></span></a
+			>
+			<button
+				class="collapse-toggle"
+				aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+				aria-expanded={!sidebarCollapsed}
+				aria-controls="sidebar-navigation"
+				title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+				onclick={toggleSidebar}
+				><Icon name="chevron-left" size={15} /></button
+			>
+		</div>
+		<nav aria-label="Main" id="sidebar-navigation">
 			{#each navigation as n}<a
 					href={n.href}
+					title={n.label}
+					aria-label={n.label}
 					class:active={page.url.pathname === n.href}
 					aria-current={page.url.pathname === n.href ? 'page' : undefined}
-					><Icon name={n.icon} size={17} /><span>{n.label}</span></a
+					><Icon name={n.icon} size={17} /><span aria-hidden="true">{n.label}</span></a
 				>{/each}
 		</nav>
-		<button class="theme" aria-label="Toggle color theme" onclick={toggleTheme}
+		<button class="theme" aria-label="Toggle color theme" title="Toggle color theme" onclick={toggleTheme}
 			><Icon name={preferences.theme === 'dark' ? 'sun' : 'moon'} size={16} /></button
 		>
 	</aside>
-	<div class="workspace">
+	<div class="workspace" class:sidebar-collapsed={sidebarCollapsed}>
 		{#if ready && isPreview()}<div class="preview-note">
 				Read-only browser preview — use the desktop app to save your data.
 			</div>{/if}
@@ -112,6 +157,8 @@
 
 <style>
 	.app-shell {
+		--sidebar-duration: 360ms;
+		--sidebar-ease: cubic-bezier(0.22, 1, 0.36, 1);
 		display: flex;
 		min-height: 100vh;
 	}
@@ -121,27 +168,86 @@
 		inset: 0 auto 0 0;
 		background: var(--sidebar);
 		border-right: 1px solid var(--line);
-		padding: 26px 14px 18px;
+		padding: 26px 12px 18px;
 		display: flex;
 		flex-direction: column;
 		z-index: 30;
+		transition: width var(--sidebar-duration) var(--sidebar-ease);
+	}
+	.sidebar.collapsed {
+		width: 68px;
+	}
+	.sidebar-head {
+		display: flex;
+		align-items: center;
+		height: 32px;
+		flex-shrink: 0;
+		margin-bottom: 22px;
 	}
 	.brand {
-		padding: 0 12px 26px;
+		min-width: 0;
+		padding: 0 12px;
 		text-decoration: none;
 		font: italic 450 26px/1 var(--serif);
 		letter-spacing: -0.02em;
 		color: var(--fg);
 	}
-	.brand span {
+	.brand-wordmark {
+		display: inline-flex;
+		align-items: baseline;
+		white-space: nowrap;
+		color: var(--fg);
+	}
+	.brand-dot {
 		color: var(--accent);
+	}
+	.brand-middle {
+		display: inline-grid;
+		grid-template-columns: 1fr;
+		opacity: 1;
+		transition:
+			grid-template-columns var(--sidebar-duration) var(--sidebar-ease),
+			opacity 180ms ease 90ms;
+	}
+	.brand-middle > span {
+		min-width: 0;
+		overflow: hidden;
+	}
+	.sidebar.collapsed .brand-middle {
+		grid-template-columns: 0fr;
+		opacity: 0;
+		transition-delay: 0ms;
+	}
+	.collapse-toggle {
+		position: absolute;
+		top: 29px;
+		right: -13px;
+		width: 26px;
+		height: 26px;
+		padding: 4px;
+		border: 1px solid var(--line);
+		border-radius: 50%;
+		background: var(--sidebar);
+		color: var(--muted);
+		box-shadow: 0 2px 6px #00000008;
+	}
+	.collapse-toggle:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+	.collapse-toggle :global(svg) {
+		transition: transform var(--sidebar-duration) var(--sidebar-ease);
+	}
+	.sidebar.collapsed .collapse-toggle :global(svg) {
+		transform: rotate(180deg);
 	}
 	nav {
 		display: grid;
 		gap: 2px;
 	}
 	nav a {
-		display: flex;
+		display: grid;
+		grid-template-columns: 20px minmax(0, 1fr);
 		align-items: center;
 		gap: 12px;
 		text-decoration: none;
@@ -149,6 +255,9 @@
 		color: var(--muted);
 		border-radius: 8px;
 		font-size: 13px;
+		height: 41px;
+		overflow: hidden;
+		white-space: nowrap;
 		transition:
 			color 0.16s var(--ease),
 			background 0.16s var(--ease);
@@ -160,8 +269,25 @@
 	nav a:hover {
 		color: var(--fg);
 	}
+	nav a :global(svg) {
+		justify-self: center;
+	}
+	nav a span {
+		opacity: 1;
+		transform: translateX(0);
+		visibility: visible;
+		transition: opacity 180ms ease 100ms, transform 220ms var(--sidebar-ease) 80ms, visibility 0s;
+	}
+	.sidebar.collapsed nav a span {
+		opacity: 0;
+		transform: translateX(-6px);
+		visibility: hidden;
+		transition: opacity 100ms ease, transform 160ms ease, visibility 0s 100ms;
+	}
 	.theme {
-		margin: auto 0 0 auto;
+		margin: auto auto 0 4px;
+		width: 36px;
+		height: 36px;
 		border: 0;
 		background: transparent;
 		color: var(--muted);
@@ -182,6 +308,10 @@
 		margin-left: 188px;
 		min-width: 0;
 		flex: 1;
+		transition: margin-left var(--sidebar-duration) var(--sidebar-ease);
+	}
+	.workspace.sidebar-collapsed {
+		margin-left: 68px;
 	}
 	.preview-note {
 		font-size: 11px;
@@ -204,6 +334,13 @@
 	#content:focus {
 		outline: none;
 	}
+	.app-shell:not(.sidebar-animated) .sidebar,
+	.app-shell:not(.sidebar-animated) .workspace,
+	.app-shell:not(.sidebar-animated) .brand-middle,
+	.app-shell:not(.sidebar-animated) nav a span,
+	.app-shell:not(.sidebar-animated) .collapse-toggle :global(svg) {
+		transition: none;
+	}
 	@media (max-width: 760px) {
 		.app-shell {
 			display: block;
@@ -218,9 +355,25 @@
 			align-items: center;
 			gap: 14px;
 		}
+		.sidebar.collapsed {
+			width: 100%;
+			padding: 10px 14px;
+		}
+		.sidebar-head,
+		.sidebar.collapsed .sidebar-head {
+			flex-direction: row;
+			margin: 0;
+		}
 		.brand {
 			font-size: 22px;
 			padding: 0;
+		}
+		.collapse-toggle {
+			display: none;
+		}
+		.sidebar.collapsed .brand-middle {
+			grid-template-columns: 1fr;
+			opacity: 1;
 		}
 		nav {
 			display: flex;
@@ -229,6 +382,7 @@
 			gap: 1px;
 		}
 		nav a {
+			display: flex;
 			padding: 8px;
 			font-size: 11px;
 			gap: 6px;
@@ -239,7 +393,8 @@
 		.theme {
 			margin: 0;
 		}
-		.workspace {
+		.workspace,
+		.workspace.sidebar-collapsed {
 			margin-left: 0;
 		}
 		.skip {

@@ -1,24 +1,28 @@
-//! 判分与 cloze 生成——纯函数，全部可单测。
+//! 判分与出题——纯函数，全部可单测。
 
 use crate::dictionary::engine::normalize_word;
 use crate::dictionary::model::WordEntry;
 use crate::domain::{ExampleId, SenseId};
 use crate::memory::model::RecallQuality;
 
-/// cloze 产物：挖空句 + 出处（sense/example 供提示与留档）。
-pub struct Cloze {
+use super::model::PromptKind;
+
+/// 出题产物：题目文本 + 类型 + 出处（sense/example 供提示与留档）。
+pub struct Prompt {
+    pub kind: PromptKind,
     pub text: String,
     pub sense_id: Option<SenseId>,
     pub example_id: Option<ExampleId>,
 }
 
-/// 构造 cloze：按义项顺序找第一条包含目标词的例句并挖空；
-/// 全部落空 → 降级为主义项英英释义作 prompt。
-pub fn build_cloze(entry: &WordEntry) -> Cloze {
+/// 出题优先级：词典例句挖空 → 英文释义填词 → 中文释义兜底。
+/// （AI 例句由 ai 模块验证后经 blank_word 挖空，优先级在应用层拼装。）
+pub fn build_prompt(entry: &WordEntry) -> Prompt {
     for sense in &entry.senses {
         for ex in &sense.examples {
             if let Some(blanked) = blank_word(&ex.text, &entry.word) {
-                return Cloze {
+                return Prompt {
+                    kind: PromptKind::Cloze,
                     text: blanked,
                     sense_id: Some(sense.id),
                     example_id: Some(ex.id),
@@ -26,35 +30,58 @@ pub fn build_cloze(entry: &WordEntry) -> Cloze {
             }
         }
     }
-    let fallback = entry
+    if let Some(s) = entry
         .senses
         .iter()
         .find(|s| !s.english_definition.trim().is_empty())
-        .or_else(|| {
-            entry.senses.iter().find(|s| {
-                s.chinese_definition
-                    .as_deref()
-                    .is_some_and(|d| !d.trim().is_empty())
-            })
-        });
-    match fallback {
-        Some(s) => Cloze {
-            text: {
-                let definition = if s.english_definition.trim().is_empty() {
-                    s.chinese_definition.clone().unwrap_or_default()
-                } else {
-                    s.english_definition.clone()
-                };
-                blank_word(&definition, &entry.word).unwrap_or(definition)
-            },
+    {
+        let definition =
+            blank_word(&s.english_definition, &entry.word).unwrap_or_else(|| s.english_definition.clone());
+        return Prompt {
+            kind: PromptKind::Definition,
+            text: definition,
             sense_id: Some(s.id),
             example_id: None,
-        },
-        None => Cloze {
-            text: String::new(),
-            sense_id: None,
+        };
+    }
+    build_definition_prompt(entry)
+}
+
+/// 复习时的本地兜底：只以释义出题，避免把词典例句当作填空题。
+pub fn build_definition_prompt(entry: &WordEntry) -> Prompt {
+    if let Some(s) = entry.senses.iter().find(|s| {
+        s.chinese_definition
+            .as_deref()
+            .is_some_and(|d| !d.trim().is_empty())
+    }) {
+        let zh = s.chinese_definition.clone().unwrap_or_default();
+        let definition = blank_word(&zh, &entry.word).unwrap_or(zh);
+        return Prompt {
+            kind: PromptKind::DefinitionZh,
+            text: definition,
+            sense_id: Some(s.id),
             example_id: None,
-        },
+        };
+    }
+    if let Some(s) = entry
+        .senses
+        .iter()
+        .find(|s| !s.english_definition.trim().is_empty())
+    {
+        let definition =
+            blank_word(&s.english_definition, &entry.word).unwrap_or_else(|| s.english_definition.clone());
+        return Prompt {
+            kind: PromptKind::Definition,
+            text: definition,
+            sense_id: Some(s.id),
+            example_id: None,
+        };
+    }
+    Prompt {
+        kind: PromptKind::Definition,
+        text: String::new(),
+        sense_id: None,
+        example_id: None,
     }
 }
 
@@ -201,8 +228,8 @@ mod tests {
     }
 
     #[test]
-    fn cloze_fallback_to_definition() {
-        // 构造无匹配例句的词条
+    fn prompt_kinds_follow_priority() {
+        // 构造无匹配例句的词条：有英文释义 → Definition
         let entry = WordEntry {
             id: crate::domain::WordId(1),
             word: "zenith".into(),
@@ -222,9 +249,38 @@ mod tests {
             antonyms: vec![],
             word_family: vec![],
         };
-        let c = build_cloze(&entry);
-        assert_eq!(c.text, "the highest point");
-        assert_eq!(c.example_id, None);
+        let p = build_prompt(&entry);
+        assert_eq!(p.kind, PromptKind::Definition);
+        assert_eq!(p.text, "the highest point");
+        assert_eq!(p.sense_id, Some(crate::domain::SenseId(1)));
+        assert_eq!(p.example_id, None);
+
+        // 删掉英文释义 → 中文兜底 DefinitionZh
+        let mut zh_only = entry.clone();
+        zh_only.senses[0].english_definition = String::new();
+        let p = build_prompt(&zh_only);
+        assert_eq!(p.kind, PromptKind::DefinitionZh);
+        assert_eq!(p.text, "顶点");
+
+        // 词条带例句 → Cloze（词典来源）
+        let mut with_example = entry.clone();
+        with_example.senses[0].examples
+            .push(crate::dictionary::model::Example {
+                id: crate::domain::ExampleId(7),
+                text: "The sun reached its zenith at noon.".into(),
+                translation: None,
+            });
+        let p = build_prompt(&with_example);
+        assert_eq!(p.kind, PromptKind::Cloze);
+        assert_eq!(p.text, "The sun reached its ______ at noon.");
+        assert_eq!(p.example_id, Some(crate::domain::ExampleId(7)));
+
+        // 既无例句也无释义 → 空 prompt（调用方跳过该词）
+        let mut empty = entry.clone();
+        empty.senses[0].english_definition = String::new();
+        empty.senses[0].chinese_definition = None;
+        let p = build_prompt(&empty);
+        assert!(p.text.trim().is_empty());
     }
 
     #[test]

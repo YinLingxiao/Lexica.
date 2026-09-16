@@ -3,6 +3,7 @@
 	import { beforeNavigate } from '$app/navigation';
 	import Icon from './Icon.svelte';
 	import HighlightedText from './HighlightedText.svelte';
+	import AiExampleLoading from './AiExampleLoading.svelte';
 	import { preferences } from '$lib/preferences.svelte';
 	import {
 		setComprehension,
@@ -12,6 +13,8 @@
 		errorMessage,
 		statusLabel,
 		isPreview,
+		aiConfigGet,
+		aiGenerateExamples,
 		type ComprehensionLevel,
 		type LookupWordResult
 	} from '$lib/api';
@@ -30,7 +33,15 @@
 	} = $props();
 	const entry = $derived(result.outcome.type === 'hit' ? result.outcome.entry : null);
 	const miss = $derived(result.outcome.type === 'miss' ? result.outcome : null);
-	const examples = $derived(entry?.senses.flatMap((s) => s.examples) ?? []);
+	let aiSentence = $state('');
+	let aiLoading = $state(false);
+	let aiUnavailable = $state(false);
+	const dictionaryExamples = $derived(
+		entry?.senses.flatMap((s) => s.examples.filter((example) => example.text.trim())) ?? []
+	);
+	const examples = $derived(
+		aiSentence ? [{ text: aiSentence, translation: null }] : dictionaryExamples
+	);
 
 	const primary = $derived(entry?.senses[0]);
 	let full = $state(false);
@@ -51,6 +62,28 @@
 	let mounted = true;
 	let recordedRank = 0;
 	let recordChain = Promise.resolve();
+	async function loadAiExample() {
+		if (!entry || dictionaryExamples.length || !entry.senses.length || isPreview()) return;
+		try {
+			const config = await aiConfigGet();
+			if (!mounted || !config.enabled) return;
+			aiLoading = true;
+			const generated = await aiGenerateExamples([{ word_id: entry.id, sense_id: null }]);
+			if (!mounted) return;
+			const sentence = generated.find((item) => item.word_id === entry.id)?.sentence;
+			if (sentence?.includes('______')) {
+				aiSentence = sentence.replaceAll('______', entry.word).replace(/^./, (letter) =>
+					letter.toUpperCase()
+				);
+			} else {
+				aiUnavailable = true;
+			}
+		} catch {
+			if (mounted) aiUnavailable = true;
+		} finally {
+			if (mounted) aiLoading = false;
+		}
+	}
 	const ranks: Record<ComprehensionLevel, number> = {
 		unknown: 0,
 		context: 1,
@@ -183,6 +216,7 @@
 		full = preferences.reading === 'full';
 		if (full) record(entry?.senses.some((s) => s.chinese_definition) ? 'chinese' : 'english');
 		void loadNote();
+		void loadAiExample();
 		syncVoices();
 		window.speechSynthesis?.addEventListener('voiceschanged', syncVoices);
 	});
@@ -262,12 +296,15 @@
 						{#if example}<p class="reading example">
 								<HighlightedText text={example.text} word={entry.word} />
 							</p>
+							{#if aiSentence}<span class="ai-source">AI example</span>{/if}
 							{#if examples.length > 1}<button class="ghost another" onclick={() => exampleIdx++}
 									>Another example <span
 										>{(exampleIdx % examples.length) + 1} / {examples.length}</span
 									><Icon name="arrow" size={14} /></button
-								>{/if}{:else}<p class="muted">
-								No example sentence for this word — see the definitions.
+								>{/if}{:else if aiLoading}<AiExampleLoading />{:else}<p class="muted">
+								{aiUnavailable
+									? 'AI example unavailable — see the definitions.'
+									: 'No example sentence for this word — see the definitions.'}
 							</p>{/if}
 					</div>
 					{#if showEnglish}<div class="english-hint">
@@ -304,6 +341,10 @@
 											<p class="reading"><HighlightedText text={ex.text} word={entry.word} /></p>
 											{#if ex.translation}<footer>{ex.translation}</footer>{/if}
 										</blockquote>{/each}
+									{#if i === 0 && aiSentence}<blockquote>
+											<p class="reading"><HighlightedText text={aiSentence} word={entry.word} /></p>
+											<footer>AI example</footer>
+										</blockquote>{:else if i === 0 && aiLoading}<AiExampleLoading />{/if}
 								</div>
 							</section>{/each}{#if !entry.senses.length}<p class="muted">
 								No definitions available.
@@ -425,6 +466,12 @@
 	.example {
 		font: 450 22px/1.75 var(--serif);
 		margin: 0;
+	}
+	.ai-source {
+		display: inline-block;
+		margin-top: 8px;
+		font-size: 10px;
+		color: var(--muted);
 	}
 	.another {
 		font-size: 10px;

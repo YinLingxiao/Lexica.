@@ -140,7 +140,7 @@ pub async fn ensure_dictionary(
 ) -> Result<crate::dictionary::bootstrap::EnsureDictionaryResult, AppError> {
     let db_path = state.db_path.clone();
     tauri::async_runtime::spawn_blocking(move || {
-        crate::dictionary::bootstrap::ensure(&app, &db_path).or_else(|e| {
+        crate::dictionary::bootstrap::ensure(&app, &db_path).inspect_err(|e| {
             let _ = app.emit(
                 "dictionary-setup",
                 crate::dictionary::bootstrap::SetupProgress {
@@ -149,7 +149,6 @@ pub async fn ensure_dictionary(
                     message: e.to_string(),
                 },
             );
-            Err(e)
         })
     })
     .await
@@ -354,12 +353,56 @@ pub async fn rebuild_memory_projection(state: State<'_, AppState>) -> Result<usi
 
 // ── 复习 ──────────────────────────────────────────────────
 
-/// 复习队列（cloze prompt，不含答案）。
+/// 复习队列（旧接口，保留兼容）：题目条目，不含答案。
 #[tauri::command]
 pub async fn review_queue(state: State<'_, AppState>) -> Result<Vec<ReviewItem>, AppError> {
     let now = Utc::now();
     with_db(&state, move |conn| {
         ReviewService.queue(conn, now).map_err(AppError::from)
+    })
+    .await
+}
+
+/// 只读复习组：到期词（≤10）的完整词条 + 本地题目。
+/// 浏览阶段零副作用：不写 encounters、不创建 pending review、不动记忆投影。
+#[tauri::command]
+pub async fn review_group(
+    state: State<'_, AppState>,
+) -> Result<Vec<crate::review::service::ReviewGroupEntry>, AppError> {
+    let now = Utc::now();
+    with_db(&state, move |conn| {
+        ReviewService.group(conn, now).map_err(AppError::from)
+    })
+    .await
+}
+
+/// 组内重考：只读判分（复用 grader 规则），不重复计入正式复习。
+#[tauri::command]
+pub async fn practice_check(
+    state: State<'_, AppState>,
+    word_id: WordId,
+    answer: Option<String>,
+) -> Result<bool, AppError> {
+    with_db(&state, move |conn| {
+        ReviewService
+            .practice_check(conn, word_id, answer)
+            .map_err(AppError::from)
+    })
+    .await
+}
+
+/// 组内重考：只读提示（与正式复习同一构造逻辑），不落任何记录。
+#[tauri::command]
+pub async fn practice_hint(
+    state: State<'_, AppState>,
+    word_id: WordId,
+    sense_id: Option<SenseId>,
+    hint_no: u32,
+) -> Result<Hint, AppError> {
+    with_db(&state, move |conn| {
+        ReviewService
+            .practice_hint(conn, word_id, sense_id, hint_no)
+            .map_err(AppError::from)
     })
     .await
 }
@@ -411,6 +454,140 @@ pub async fn submit_review(
             .map_err(AppError::from)
     })
     .await
+}
+
+// ── AI 例句（可选，默认关闭）────────────────────────────────
+
+/// 读取 AI 配置视图（has_key 布尔，绝不回传密钥本身）。
+#[tauri::command]
+pub async fn ai_config_get(state: State<'_, AppState>) -> Result<crate::ai::AiConfigView, AppError> {
+    with_db(&state, move |conn| {
+        let cfg = crate::ai::load_config(conn).map_err(AppError::from)?;
+        let has_key = crate::ai::key_store().get()?.is_some();
+        Ok(crate::ai::AiConfigView {
+            enabled: cfg.enabled,
+            base_url: cfg.base_url,
+            model: cfg.model,
+            has_key,
+        })
+    })
+    .await
+}
+
+/// 保存 AI 配置。key 语义：None = 保留现有密钥；Some("") = 删除；Some(k) = 更换。
+/// 密钥写入 Windows 凭据管理器失败时直接报错——绝不降级为明文存储。
+#[tauri::command]
+pub async fn ai_config_save(
+    state: State<'_, AppState>,
+    enabled: bool,
+    base_url: String,
+    model: String,
+    key: Option<String>,
+) -> Result<crate::ai::AiConfigView, AppError> {
+    if let Some(key) = &key {
+        let store = crate::ai::key_store();
+        if key.is_empty() {
+            store.delete()?;
+        } else {
+            store.set(key)?;
+        }
+    }
+    let base_url = base_url.trim().to_string();
+    let model = model.trim().to_string();
+    with_db(&state, move |conn| {
+        crate::ai::save_config(conn, enabled, &base_url, &model).map_err(AppError::from)
+    })
+    .await?;
+    ai_config_get(state).await
+}
+
+/// 连接测试：一次最小 Chat Completions 请求验证地址/模型/密钥。
+/// 配置先短锁取出，HTTP 在阻塞线程池执行——等待网络期间不持有数据库锁。
+#[tauri::command]
+pub async fn ai_test_connection(state: State<'_, AppState>) -> Result<(), AppError> {
+    let cfg = with_db(&state, |conn| {
+        crate::ai::load_config(conn).map_err(AppError::from)
+    })
+    .await?;
+    let key = crate::ai::key_store()
+        .get()?
+        .ok_or_else(|| AppError::Network("No API key stored for AI".into()))?;
+    tauri::async_runtime::spawn_blocking(move || crate::ai::test_connection(&cfg, &key))
+        .await
+        .map_err(|e| AppError::TaskJoin(e.to_string()))?
+}
+
+#[derive(Debug, serde::Deserialize)]
+pub struct AiGenItem {
+    pub word_id: i64,
+    pub sense_id: Option<i64>,
+}
+
+/// 例句生成（浏览期间后台调用，每组 ≤10 词，一批一个请求、15s 超时、不重试）。
+/// 流程：短锁（配置 + 装配词条 + 查缓存）→ 无锁网络 → 短锁写缓存。
+/// 仅处理 `enabled` 且有效（sense 属于该词）的条目；已缓存的直接返回。
+#[tauri::command]
+pub async fn ai_generate_examples(
+    state: State<'_, AppState>,
+    items: Vec<AiGenItem>,
+) -> Result<Vec<crate::ai::AiExample>, AppError> {
+    if items.is_empty() {
+        return Ok(vec![]);
+    }
+    let (cfg, words, cached) = with_db(&state, move |conn| {
+        let cfg = crate::ai::load_config(conn).map_err(AppError::from)?;
+        if !cfg.enabled {
+            return Ok((cfg, Vec::new(), Vec::new()));
+        }
+        let mut words = Vec::new();
+        for item in &items {
+            if let Some(w) =
+                crate::ai::load_gen_word(conn, item.word_id, item.sense_id).map_err(AppError::from)?
+            {
+                words.push(w);
+            }
+        }
+        let cached = crate::ai::cache_get(conn, &words, &cfg).map_err(AppError::from)?;
+        Ok((cfg, words, cached))
+    })
+    .await?;
+    if !cfg.enabled || words.is_empty() {
+        return Ok(cached);
+    }
+    let missing: Vec<crate::ai::GenWord> = words
+        .iter()
+        .filter(|w| !cached.iter().any(|c| c.word_id == w.word_id))
+        .cloned()
+        .collect();
+    if missing.is_empty() {
+        return Ok(cached);
+    }
+    // 网络等待不持有数据库锁：密钥与配置已在锁外就绪。
+    let key = match crate::ai::key_store().get() {
+        Ok(Some(key)) => key,
+        Ok(None) if !cached.is_empty() => return Ok(cached),
+        Ok(None) => return Err(AppError::Network("No API key stored for AI".into())),
+        Err(_) if !cached.is_empty() => return Ok(cached),
+        Err(error) => return Err(error),
+    };
+    let http_cfg = cfg.clone();
+    let http_words = missing.clone();
+    let generated = tauri::async_runtime::spawn_blocking(move || {
+        crate::ai::generate_batch(&http_words, &http_cfg, &key, crate::ai::REQUEST_TIMEOUT)
+    })
+    .await
+    .map_err(|e| AppError::TaskJoin(e.to_string()))?;
+    let generated = match generated {
+        Ok(generated) => generated,
+        Err(_) if !cached.is_empty() => return Ok(cached),
+        Err(error) => return Err(error),
+    };
+    let cache_rows = generated.clone();
+    with_db(&state, move |conn| {
+        crate::ai::cache_put(conn, &missing, &cfg, &cache_rows).map_err(AppError::from)
+    })
+    .await?;
+    Ok(cached.into_iter().chain(generated).collect())
 }
 
 /// 统计页的 fading 列表：memory 到期信息 + dictionary 词头。
