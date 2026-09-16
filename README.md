@@ -4,6 +4,7 @@
 
 [![release](https://img.shields.io/github/v/release/YinLingxiao/Lexica.)](https://github.com/YinLingxiao/Lexica./releases/latest)
 [![downloads](https://img.shields.io/github/downloads/YinLingxiao/Lexica./total)](https://github.com/YinLingxiao/Lexica./releases)
+![license](https://img.shields.io/github/license/YinLingxiao/Lexica.)
 ![platform](https://img.shields.io/badge/platform-Windows%20x64-8a5a2b)
 ![stack](https://img.shields.io/badge/Tauri%202-Rust%20%C2%B7%20SvelteKit%205-2f6f4e)
 
@@ -254,9 +255,9 @@ cargo clippy --all-targets -- -D warnings
 
 ## 许可证
 
-尚未指定。在添加 `LICENSE` 文件之前，本仓库默认保留所有权利（all rights reserved），他人无法合法地使用、修改或分发。
+[MIT](LICENSE) © YinLingxiao
 
-如果希望别人能自由使用，建议补一个 [MIT](https://choosealicense.com/licenses/mit/) 或 [Apache-2.0](https://choosealicense.com/licenses/apache-2.0/) 许可证。
+你可以自由使用、修改、分发本项目，包括商业用途，只需保留版权声明与许可证副本。
 
 ---
 
