@@ -1,0 +1,93 @@
+name: Release
+
+# 打 tag 即发版：push 一个 v* 标签后，自动在 Windows 上构建并创建 Release，
+# 上传 MSI 与 NSIS 安装包，另外复制一份固定文件名的副本用于永久下载链接。
+#
+#   git tag v0.2.0 && git push origin v0.2.0
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Type-check frontend
+        run: npm run check
+
+      # tauri-build 会校验 frontendDist（../build）是否存在，先构建一次前端。
+      - name: Build frontend
+        run: npm run build
+
+      - name: Rust tests
+        run: cargo test --manifest-path src-tauri/Cargo.toml
+
+      - name: Build bundles and publish release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'Lexica ${{ github.ref_name }}'
+          releaseDraft: false
+          prerelease: false
+          args: --bundles msi,nsis
+          releaseBody: |
+            Windows x64 安装包。
+
+            | 文件 | 说明 |
+            | --- | --- |
+            | `Lexica-setup.exe` | **推荐**。双击安装，自动创建开始菜单与桌面快捷方式 |
+            | `Lexica.msi` | 适合企业批量部署 / 静默安装 |
+
+            带版本号的同名文件内容完全一致。不带版本号的两个是永久链接：
+
+            ```
+            https://github.com/YinLingxiao/Lexica./releases/latest/download/Lexica-setup.exe
+            https://github.com/YinLingxiao/Lexica./releases/latest/download/Lexica.msi
+            ```
+
+            安装包未做代码签名，Windows 可能提示"未知发布者"，选择"更多信息 → 仍要运行"即可。
+
+      # tauri-action 上传的是带版本号的产物名，这里再传一份固定文件名的副本，
+      # 让 /releases/latest/download/<固定名> 永远指向最新版本。
+      - name: Upload stable-named aliases
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          version=$(node -e "process.stdout.write(JSON.parse(require('fs').readFileSync('src-tauri/tauri.conf.json','utf8')).version)")
+          mkdir -p dist
+          cp "src-tauri/target/release/bundle/nsis/Lexica_${version}_x64-setup.exe" dist/Lexica-setup.exe
+          cp "src-tauri/target/release/bundle/msi/Lexica_${version}_x64_en-US.msi" dist/Lexica.msi
+          gh release upload "${GITHUB_REF_NAME}" dist/Lexica-setup.exe dist/Lexica.msi --clobber

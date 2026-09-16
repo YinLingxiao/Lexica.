@@ -881,6 +881,7 @@ test('AI settings: DeepSeek defaults, save, persistence and connection errors', 
 	await desktopFixture(page);
 	await page.goto('/settings');
 	await expect(page.getByRole('heading', { name: 'DeepSeek example sentences' })).toBeVisible();
+	await page.screenshot({ path: 'docs/screenshots/ai-settings.png', fullPage: true });
 	// Off by default.
 	await expect(page.getByRole('button', { name: 'Off', exact: true })).toHaveAttribute(
 		'aria-pressed',
