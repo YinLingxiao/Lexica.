@@ -1,6 +1,6 @@
-# Lexica
+# Lexica.
 
-> 本地优先的英语词典：查词是理解的开始，逐渐不再需要查这个词，才是目的。
+> A local-first English dictionary that tries to make itself unnecessary.
 
 [![release](https://img.shields.io/github/v/release/YinLingxiao/Lexica.)](https://github.com/YinLingxiao/Lexica./releases/latest)
 [![downloads](https://img.shields.io/github/downloads/YinLingxiao/Lexica./total)](https://github.com/YinLingxiao/Lexica./releases)
@@ -10,161 +10,139 @@
 
 **Tauri 2 · Rust · SQLite / FTS5 · SvelteKit 5**
 
-词库、收藏、笔记和学习记录全部保存在本机。除可选的 AI 例句补充外，应用不发起任何网络请求。
+Look up a word. Understand it in context. Move on. Vocabulary, notes, and review schedules stay on this device.
 
-![Lexica 首页](docs/screenshots/home-light.png)
+![Lexica home](docs/screenshots/home-light.png)
 
 ---
 
-## 下载
+## Download
 
-Windows 10 / 11（x64），需要 WebView2 运行时（系统通常已预装）。
+Windows 10 / 11 (x64). WebView2 is usually already installed.
 
-| 文件 | 大小 | 说明 |
+| File | Size | Notes |
 | --- | --- | --- |
-| **[Lexica-setup.exe](https://github.com/YinLingxiao/Lexica./releases/latest/download/Lexica-setup.exe)** | ~3.5 MB | **推荐**。双击安装，自动创建开始菜单与桌面快捷方式 |
-| [Lexica.msi](https://github.com/YinLingxiao/Lexica./releases/latest/download/Lexica.msi) | ~5.3 MB | 适合企业批量部署 / 静默安装 |
+| **[Lexica-setup.exe](https://github.com/YinLingxiao/Lexica./releases/latest/download/Lexica-setup.exe)** | ~3.5 MB | **Recommended.** NSIS installer with Start Menu + desktop shortcuts |
+| [Lexica.msi](https://github.com/YinLingxiao/Lexica./releases/latest/download/Lexica.msi) | ~5.3 MB | Better for silent / enterprise deploy |
 
-上面两个是**永久链接**，始终指向最新版本。也可以在 [Releases](https://github.com/YinLingxiao/Lexica./releases) 页面挑选具体版本。
+These are permanent `latest` links. Pick a specific version on [Releases](https://github.com/YinLingxiao/Lexica./releases).
 
-> ⚠️ 安装包目前**没有代码签名**，Windows 可能提示"未知发布者"。选择「更多信息 → 仍要运行」即可。正式分发建议配置代码签名证书。
-
----
-
-## 功能
-
-### 探索词典
-
-前缀建议、词形回退（`running` → `run`）、键盘上下选择、查词历史、词条深链接（`/?word=meticulous`）。
-
-### 阅读
-
-「循序理解」与「完整词条」两种密度，双语释义、例句目标词高亮、常见搭配、近反义词一键跳转、整条词条复制。
-
-### 我的词汇
-
-收藏、个人笔记、搜索、按记忆阶段筛选、分页，以及暂停 / 恢复提醒。
-
-### 温故知新
-
-最多 12 题的到期复习，三级递进提示（首字母 → 英文释义 → 中文释义）、提交防重、即时反馈与完成摘要。答错的词会重新排入本轮，重试不会重复计入正式记录。
-
-### AI 例句补充（可选，默认关闭）
-
-- 查词时若词典本身没有例句，补一条 AI 生成的例句；
-- 复习的填空句统一由 AI 生成，**判分永远在本地**完成。
-
-默认对接 DeepSeek（`https://api.deepseek.com/v1` + `deepseek-chat`），也可换成任何 OpenAI 兼容服务。
-
-安全与隐私设计：
-
-- API Key 存在 **Windows 凭据管理器**，不写入数据库、不写 localStorage、不进日志；
-- 发到前端的配置视图只报告"是否已配置密钥"，**绝不回传密钥本身**；
-- 生成结果在 Rust 侧校验（义项 ID 命中、句子非空、目标词完整词边界出现）并挖空后才交给前端，不合规条目直接丢弃并回退本地题目；
-- 有效例句按「词 + 义项 + 服务地址 + 模型 + 提示词版本」缓存，命中即跳过网络请求；
-- 单次请求 15 秒超时，**不自动重试**——失败即回退本地题目，不阻塞复习；
-- 等待网络期间不持有数据库锁。
-
-### 学习洞察
-
-14 天查词与复习活动、本地日期数据表、记忆阶段分布。
-
-### 偏好设置
-
-浅色 / 深色 / 系统主题（带圆形扩散过渡动画）、阅读字号、查词模式、ECDICT 导入、AI 例句配置。
-
-### 发音
-
-使用系统已安装的离线英语语音；未安装时明确显示为不可用，而不是静默失败。
+> The installer is currently **unsigned**. Windows SmartScreen may warn about an unknown publisher — choose **More info → Run anyway**.
 
 ---
 
-## 截图
+## Features
+
+### Dictionary
+
+Prefix suggestions, inflection fallback (`running` → `run`), keyboard navigation, recent lookups, and deep links (`/?word=meticulous`). Bilingual senses, highlighted examples, collocations, synonyms / antonyms, word family, and one-click copy.
+
+On first launch Lexica downloads the free **ECDICT** corpus (~3.4M entries, MIT) into the app data folder. You can also import your own `stardict.db` from Settings.
+
+### Vocabulary
+
+Bookmarks, private notes, search, filter by memory stage, pagination, and pause / resume review reminders.
+
+### Review
+
+Up to 12 due words per session. Progressive hints (first letter → English → Chinese), anti-double-submit, immediate feedback, and a short session summary.
+
+### AI example sentences *(optional, off by default)*
+
+- When a dictionary entry has no example, generate one short sentence.
+- Review cloze prompts can use AI; **grading always stays local**.
+
+Defaults to DeepSeek (`https://api.deepseek.com/v1` + `deepseek-chat`). Any OpenAI-compatible endpoint works.
+
+- API keys live in the **Windows Credential Manager** — never in SQLite, localStorage, or logs.
+- The UI only learns whether a key is configured, never the key itself.
+- Responses are validated in Rust (sense id, non-empty sentence, whole-word target) before the UI sees them.
+- Cached by word + sense + endpoint + model + prompt version.
+- 15s timeout, no automatic retries — failures fall back to local material.
+
+### Insights & preferences
+
+14-day lookup / review activity, memory-stage distribution, light / dark / system theme (circular reveal from the toggle), reading size, and lookup density.
+
+Pronunciation uses the system offline English voice when available.
+
+---
+
+## Screenshots
 
 | | |
 | --- | --- |
-| ![首页](docs/screenshots/home-light.png) | ![词条](docs/screenshots/word-light.png) |
-| 首页：搜索优先的布局 | 词条：完整词条视图 |
-| ![深色](docs/screenshots/word-dark.png) | ![复习](docs/screenshots/review-fixture.png) |
-| 深色主题 + 大字号 | 复习：三级提示全部展开 |
-| ![AI 设置](docs/screenshots/ai-settings.png) | ![移动端](docs/screenshots/settings-mobile.png) |
-| 设置：AI 例句补充面板 | 设置：480px 窄窗口适配 |
+| ![Home](docs/screenshots/home-light.png) | ![Entry](docs/screenshots/word-light.png) |
+| Home — search first | Full dictionary entry |
+| ![Dark](docs/screenshots/word-dark.png) | ![Review](docs/screenshots/review-fixture.png) |
+| Dark theme + large text | Review with all three hints |
+| ![AI settings](docs/screenshots/ai-settings.png) | ![Mobile](docs/screenshots/settings-mobile.png) |
+| Settings — dictionary & AI | Narrow 480px layout |
 
-> 截图取自**浏览器只读预览**（内置 50 个种子词，显示为 `50 entries · offline`）。桌面程序使用真实 ECDICT 词库，视觉与交互一致。
-> 截图由 e2e 测试自动生成到 `docs/screenshots/`，不是手工维护的。
-
----
-
-## 首次使用
-
-1. **词库**：首次启动会引导下载 ECDICT 词库（约 200 MB，SQLite 版）。也可以跳过，在设置里手动导入自己的 `stardict.db`。
-2. **发音**：依赖系统离线英语语音。Windows 可在「设置 → 时间和语言 → 语音」里安装英文语音包。
-3. **AI 例句**（可选）：在设置里打开开关，填服务地址、模型和 API Key。
+> Screenshots are taken from the **browser read-only preview** (50 seed words → `50 entries · offline`). The desktop app uses the full ECDICT corpus; layout and interaction match. Files under `docs/screenshots/` are regenerated by Playwright e2e tests.
 
 ---
 
-## 技术栈与架构
+## First run
 
-业务规则全在 Rust，前端只负责展示、交互状态和外观偏好。
+1. **Dictionary** — Lexica downloads ECDICT (~200 MB zip) into the app data folder and imports it. Or skip and import your own `stardict.db` later.
+2. **Pronunciation** — install an English offline voice pack in Windows Settings → Time & language → Speech if needed.
+3. **AI examples** *(optional)* — enable in Settings, paste a key, test the connection.
+
+---
+
+## Architecture
+
+Business rules live in Rust. The frontend is view, interaction state, and appearance preferences.
 
 ```
 src-tauri/src/
-├── domain/       纯领域模型与规则（无 IO）
-├── dictionary/   词库引擎：FTS5 检索、前缀建议、词形回退、ECDICT provider
-├── memory/       记忆阶段投影与推进规则
-├── review/       出题、判分、记录（grader / model / service）
-├── library.rs    收藏、笔记、个人词汇查询、活动统计
-├── ai.rs         AI 例句补充（可选，默认关闭）
-├── database/     连接管理、版本化迁移、时间格式
-├── commands/     IPC 组合层（Tauri command）
-├── app.rs        应用状态与路径解析
-└── bin/          无头工具：import-ecdict
+├── domain/       Pure domain models (no I/O)
+├── dictionary/   FTS5 lookup, suggestions, inflection, ECDICT provider + bootstrap download
+├── memory/       Memory-state projection
+├── review/       Queue, grading, records
+├── library.rs    Bookmarks, notes, vocabulary list, activity
+├── ai.rs         Optional example generation
+├── database/     Connection, migrations, timestamps
+├── commands/     Tauri IPC composition
+├── app.rs        App state & data-dir resolution
+└── bin/          Headless import-ecdict tool
 ```
 
-数据模型要点：
-
-- `encounters` 与已完成的 `reviews` 是**学习事实源**；`memory_states` 是**可重建投影**，随时能由事实源重算。
-- 迁移按序号顺序应用，`PRAGMA user_version` 记录版本。当前 schema **v4**：
-  `0001_init` → `0002_freq_rank_index` → `0003_word_notes` → `0004_ai_examples`。
-- 迁移只增不删，不会破坏旧词库或历史记录。
-- 默认数据库位于应用数据目录；其中的 `db_dir.txt` 可指向其他数据目录，**重启后生效**。
-
-前端：
+- `encounters` + completed `reviews` are the **source of truth**; `memory_states` is a **rebuildable projection**.
+- Migrations are append-only (`PRAGMA user_version`). Current schema includes AI example cache tables.
+- Default DB path is the app data directory. A `db_dir.txt` pointer file redirects storage (takes effect after restart).
 
 ```
 src/
-├── routes/       SvelteKit 路由：/ · /library · /review · /stats · /settings
-├── lib/api.ts    Tauri IPC 封装（浏览器预览时走只读夹具）
-├── lib/preview.ts 浏览器只读预览实现（生产包不含）
+├── routes/       / · /library · /review · /stats · /settings
+├── lib/api.ts    IPC wrappers (preview stubs in the browser)
+├── lib/preview.ts Read-only browser fixture (dev only)
 └── lib/components/
 ```
 
-浏览器外观偏好与桌面应用偏好各自独立；个人词汇数据始终只存在桌面 SQLite 中。
-
 ---
 
-## 开发
+## Develop
 
-需要 **Node.js**、**Rust MSVC 工具链**、**Windows C++ 构建工具**与 **WebView2**。
+Requires **Node.js**, **Rust (MSVC)**, **Windows C++ build tools**, and **WebView2**.
 
 ```bash
 npm install
 npm run tauri dev
 ```
 
-只跑前端：
+Frontend-only (read-only preview with 50 seed words):
 
 ```bash
 npm run dev
 ```
 
-`npm run dev` 打开的是**浏览器只读预览**，使用 50 个内置种子词，不能保存学习记录；真实功能请在 Tauri 桌面程序中使用。生产包不包含浏览器预览实现。
-
 ---
 
-## 构建
+## Build
 
-### 独立可执行文件
+### Standalone binary
 
 ```bash
 npm run build
@@ -172,121 +150,106 @@ cd src-tauri
 cargo build --release --features custom-protocol --bin lexica
 ```
 
-产物：`src-tauri/target/release/lexica.exe`。
+Output: `src-tauri/target/release/lexica.exe`.
 
-`custom-protocol` 特性在 release 构建中**必须启用**——`generate_context!` 靠它区分 dev（从 devUrl 热加载）与 release（把 `build/` 前端资产内嵌进二进制），否则产物不依赖开发服务器就无法运行。
+`custom-protocol` is required for release — without it the binary cannot serve the embedded `build/` assets.
 
-### Windows 安装包
+### Windows installers
 
 ```bash
 npm install
 npm run tauri build
 ```
 
-产物：
-
 - `src-tauri/target/release/bundle/msi/Lexica_0.1.0_x64_en-US.msi`
 - `src-tauri/target/release/bundle/nsis/Lexica_0.1.0_x64-setup.exe`
 
-版本号和产品名来自 `src-tauri/tauri.conf.json`，发布新版本前先改其中的 `version`。
+Bump `version` in `src-tauri/tauri.conf.json` before shipping.
 
-### 无头词库导入
-
-不启动 GUI，直接把 ECDICT 导入目标库（与应用内导入走同一条 `EcdictProvider` 代码路径）：
+### Headless ECDICT import
 
 ```bash
 cargo run --release --bin import-ecdict -- <stardict.db> <lexica.db>
 ```
 
-目标库不存在时自动创建并迁移；已导入过则幂等跳过（0 新增）。
+Creates and migrates the target DB if needed; re-runs are idempotent.
 
 ---
 
-## 发布
+## Publish
 
-> ⚠️ **本仓库不使用 GitHub Actions。**
+> This repo does **not** use GitHub Actions.
 >
-> 仓库名以点结尾（`Lexica.`），而 Windows runner 的工作目录固定为 `D:\a\<仓库名>\<仓库名>`。
-> Windows 无法创建以点结尾的目录，所以 `actions/checkout` 会在第一步就报：
->
-> ```
-> ##[error]Directory 'D:\a\Lexica.\Lexica.' does not exist
-> ```
->
-> 这与 workflow 写法无关，是 runner 工作目录的硬限制。若将来仓库改名，可以再启用 CI。
+> The repository name ends with a period (`Lexica.`). Windows runners use `D:\a\<name>\<name>`, and Windows cannot create a trailing-dot directory, so `actions/checkout` fails before any workflow logic runs.
 
-改用本地脚本发布：
+Local release:
 
 ```bash
-npm run tauri build                  # 构建 MSI 与 NSIS
-node scripts/publish-release.mjs     # 创建/更新 Release 并上传产物
+npm run tauri build
+node scripts/publish-release.mjs
 ```
 
-脚本会读取 `src-tauri/tauri.conf.json` 的版本号，找到或创建 `v<版本>` 的 Release，上传带版本号的产物，再额外上传一份**固定文件名**的副本（`Lexica-setup.exe` / `Lexica.msi`），使 `releases/latest/download/<固定名>` 永远指向最新版本——下载页不需要随版本改链接。
+The script reads the version from `tauri.conf.json`, creates/updates `v<version>`, uploads versioned artifacts plus stable names (`Lexica-setup.exe` / `Lexica.msi`) so `releases/latest/download/...` always points at the newest build.
 
-Release 说明来自 [`docs/release-notes-template.md`](docs/release-notes-template.md)，其中 `{{VERSION}}` 与 `{{TAG}}` 会被自动替换。
-
-常用参数：
+Release notes come from [`docs/release-notes-template.md`](docs/release-notes-template.md).
 
 ```bash
-node scripts/publish-release.mjs --skip-build      # 复用已有产物，不重新构建
-node scripts/publish-release.mjs --replace         # 覆盖同名资源（重传）
-node scripts/publish-release.mjs --tag v0.2.0      # 指定 tag（默认 v<版本>）
-node scripts/publish-release.mjs --notes my.md     # 指定说明文件
+node scripts/publish-release.mjs --skip-build
+node scripts/publish-release.mjs --replace
+node scripts/publish-release.mjs --tag v0.2.0
 ```
 
-凭据优先读环境变量 `GITHUB_TOKEN`；没有则从 Git 凭据管理器读取，Windows 上通常已登录，无需额外配置。
+Auth: `GITHUB_TOKEN`, or the Git credential helper (usually already signed in on Windows).
 
 ---
 
-## 测试
+## Test
 
 ```bash
-npm run check                                  # svelte-check：0 错误 0 警告
+npm run check
 npm run build
 npx playwright install chromium
-npm run test:e2e                               # 28 个界面测试
+npm run test:e2e
 cd src-tauri
-cargo test                                     # 77 个 Rust 测试
+cargo test
 cargo clippy --all-targets -- -D warnings
 ```
 
-- **界面测试**（Playwright）覆盖只读预览与隔离的 IPC 夹具：键盘选词、三级提示顺序、防重复提交、错词重排、主题过渡动画、AI 回退与缓存、窄窗口适配等。
-- **Rust 测试**验证真实 SQLite 存储与记忆规则。
-- 界面截图保存在 `docs/screenshots/`，由测试自动生成。
-- `npm run format` 统一前端和测试代码格式。
+- Playwright covers the preview UI and IPC fixtures (hints, anti-double-submit, theme reveal, AI fallback, narrow layout).
+- Rust tests cover real SQLite storage and memory rules.
+- Screenshots in `docs/screenshots/` are produced by e2e.
 
 ---
 
-## 数据与隐私
+## Privacy
 
-- 词库、收藏、笔记、复习记录全部保存在**本机** SQLite。
-- 除可选的 AI 例句补充外，**不发起任何网络请求**。
-- 开启 AI 例句后，只会把当前单词与释义发送到**你自己配置**的服务地址；判分始终在本地。
-- API Key 存 Windows 凭据管理器，应用绝不记录或回传密钥。
-
----
-
-## 已知限制
-
-- 仅提供 **Windows x64** 版本（MSI / NSIS），暂无 macOS 与 Linux 构建。
-- 安装包**未做代码签名**，SmartScreen 会提示"未知发布者"。
-- 发音依赖系统已安装的离线英语语音。
-- 词库首次导入需要约 200 MB 下载，或自备 `stardict.db`。
-- AI 例句补充需要自备第三方 API Key，会产生相应费用。
+- Dictionary, bookmarks, notes, and review history live in **local** SQLite.
+- Network is used only for **first-run ECDICT download** and **optional AI examples**.
+- With AI on, only the current word and sense go to **your** configured endpoint. Grading stays local.
+- API keys stay in the Windows Credential Manager.
 
 ---
 
-## 许可证
+## Limits
+
+- Windows x64 only (MSI / NSIS).
+- Unsigned installer → SmartScreen warning.
+- Pronunciation needs a system English voice pack.
+- First dictionary import needs ~200 MB download (or your own `stardict.db`).
+- AI examples need your own API key and may incur usage fees.
+
+---
+
+## License
 
 [MIT](LICENSE) © YinLingxiao
 
-你可以自由使用、修改、分发本项目，包括商业用途，只需保留版权声明与许可证副本。
+Free to use, modify, and distribute, including commercially, with the copyright notice retained.
 
 ---
 
-## 致谢
+## Credits
 
-完整审查、已落实事项、验证边界和后续优先级见 [项目审查报告](docs/PROJECT_REVIEW.md)。
+Review notes and follow-ups: [PROJECT_REVIEW.md](docs/PROJECT_REVIEW.md).
 
-设置页署名图标点击后跳转至 [github.com/YinLingxiao](https://github.com/YinLingxiao)。
+Dictionary data: [ECDICT](https://github.com/skywind3000/ECDICT) (MIT).

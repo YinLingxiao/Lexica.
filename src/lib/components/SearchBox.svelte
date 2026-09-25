@@ -205,7 +205,7 @@
 		background: var(--card);
 		border: 1px solid var(--line);
 		border-radius: 10px;
-		box-shadow: 0 8px 24px #1f1e1d14;
+		box-shadow: 0 8px 24px #25252514;
 		animation: drop 0.16s var(--ease) both;
 	}
 	@keyframes drop {
