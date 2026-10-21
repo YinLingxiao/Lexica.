@@ -18,22 +18,22 @@ Lexica {{TAG}}：本地优先的英语词典 + 间隔复习。
 
 ## 这个版本包含
 
-- **探索词典**：前缀建议、词形回退、键盘导航、查词历史、词条深链接
-- **阅读**：循序理解 / 完整词条、双语释义、例句高亮、搭配、近反义词跳转
-- **我的词汇**：收藏、个人笔记、搜索、记忆阶段筛选、分页、暂停 / 恢复提醒
-- **温故知新**：最多 12 题的到期复习、三级提示、提交防重、反馈与完成摘要
-- **AI 例句补充**（可选，默认关闭）：查词缺例句时补 AI 例句，复习填空句由 AI 生成
-- **学习洞察**：14 天查词与复习活动、记忆阶段分布
-- **偏好设置**：浅色 / 深色 / 系统主题、阅读字号、查词模式、ECDICT 导入
+- **查词**：前缀建议、词形回退、词头先完整显示再按音节展开、词频与 CEFR、双语释义和例句高亮
+- **词条延伸**：助记、词根词缀、派生、形近词、近义词、反义词、搭配、私人笔记
+- **词书学习**：CET-4 / CET-6 / 考研 / 高考 / TOEFL / IELTS / GRE / Oxford 3000，以及收藏词和查词记录
+- **学习卡**：认识 / 模糊 / 忘记，八个扩展栏，组内填空练习
+- **我的词汇**：收藏、搜索、记忆阶段筛选、暂停 / 恢复提醒
+- **AI 例句**（可选，默认关闭）：缺例句时补一句；评分始终在本地
+- **外观**：浅色 / 深色 / 跟随系统，以及留白沙龙、极地群青、牛津辞书三种风格
 
 ## 界面
 
 | | |
 | --- | --- |
 | ![词条](https://raw.githubusercontent.com/YinLingxiao/Lexica./main/docs/screenshots/word-light.png) | ![深色](https://raw.githubusercontent.com/YinLingxiao/Lexica./main/docs/screenshots/word-dark.png) |
-| 完整词条视图 | 深色主题 + 大字号 |
+| 词条：音节展开后的词头 | 深色主题 + 大字号 |
 | ![复习](https://raw.githubusercontent.com/YinLingxiao/Lexica./main/docs/screenshots/review-fixture.png) | ![AI 设置](https://raw.githubusercontent.com/YinLingxiao/Lexica./main/docs/screenshots/ai-settings.png) |
-| 复习：三级提示全部展开 | 设置：AI 例句补充面板 |
+| 学习卡 | 设置：主题、风格与词典 |
 
 > 截图取自浏览器只读预览（内置 50 个种子词）。桌面程序使用真实 ECDICT 词库，视觉与交互一致。
 

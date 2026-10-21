@@ -213,8 +213,8 @@ npm install
 npm run tauri build
 ```
 
-- `src-tauri/target/release/bundle/msi/Lexica_0.1.0_x64_en-US.msi`
-- `src-tauri/target/release/bundle/nsis/Lexica_0.1.0_x64-setup.exe`
+- `src-tauri/target/release/bundle/msi/Lexica_0.2.0_x64_en-US.msi`
+- `src-tauri/target/release/bundle/nsis/Lexica_0.2.0_x64-setup.exe`
 
 发布前先改 `src-tauri/tauri.conf.json` 里的 `version`。
 

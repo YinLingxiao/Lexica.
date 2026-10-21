@@ -1,6 +1,6 @@
 [package]
 name = "lexica"
-version = "0.1.0"
+version = "0.2.0"
 description = "A local-first English dictionary that tries to make itself unnecessary."
 edition = "2021"
 # 存在多个 bin（import-ecdict 工具）时指定 tauri dev 的默认可执行文件。
