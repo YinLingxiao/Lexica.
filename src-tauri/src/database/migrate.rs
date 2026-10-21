@@ -9,6 +9,7 @@ const MIGRATIONS: &[&str] = &[
     include_str!("migrations/0002_freq_rank_index.sql"),
     include_str!("migrations/0003_word_notes.sql"),
     include_str!("migrations/0004_ai_examples.sql"),
+    include_str!("migrations/0005_study_system.sql"),
 ];
 
 pub fn migrate(conn: &Connection) -> Result<(), DbError> {
@@ -72,7 +73,7 @@ mod tests {
         let version: i64 = conn
             .pragma_query_value(None, "user_version", |r| r.get(0))
             .unwrap();
-        assert_eq!(version, 4);
+        assert_eq!(version, 5);
 
         let names = object_names(&conn);
         for expected in [
@@ -89,6 +90,8 @@ mod tests {
             "review_attempts",
             "app_settings",
             "ai_example_cache",
+            "word_enrichments",
+            "custom_wordbook_words",
         ] {
             assert!(
                 names.iter().any(|n| n == expected),
@@ -101,7 +104,7 @@ mod tests {
         let version: i64 = conn
             .pragma_query_value(None, "user_version", |r| r.get(0))
             .unwrap();
-        assert_eq!(version, 4);
+        assert_eq!(version, 5);
     }
 
     #[test]

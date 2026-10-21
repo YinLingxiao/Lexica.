@@ -248,6 +248,7 @@ mod tests {
             synonyms: vec![],
             antonyms: vec![],
             word_family: vec![],
+            ..Default::default()
         };
         let p = build_prompt(&entry);
         assert_eq!(p.kind, PromptKind::Definition);

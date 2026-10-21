@@ -1,5 +1,6 @@
 <script lang="ts">
 	let { name, size = 20 }: { name: string; size?: number } = $props();
+	const filled = new Set(['star-filled']);
 	const paths: Record<string, string> = {
 		search: 'm21 21-4.5-4.5 M19 10.5a8.5 8.5 0 1 1-17 0 8.5 8.5 0 0 1 17 0',
 		book: 'M12 6c-3-3-7-3-10-2v15c4-1 7 0 10 2 3-2 6-3 10-2V4c-3-1-7-1-10 2Zm0 0v15',
@@ -18,7 +19,15 @@
 		download: 'M12 3v12m-5-5 5 5 5-5 M4 16v5h16v-5',
 		spark: 'm12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z',
 		'chevron-left': 'm15 18-6-6 6-6',
-		'chevron-right': 'm9 18 6-6-6-6'
+		'chevron-right': 'm9 18 6-6-6-6',
+		'chevrons-right': 'm6 17 5-5-5-5 M13 17l5-5-5-5',
+		star: 'm12 3 2.7 5.9 6.3.7-4.7 4.3 1.3 6.1L12 17l-5.6 3 1.3-6.1L3 9.6l6.3-.7L12 3Z',
+		'star-filled': 'm12 3 2.7 5.9 6.3.7-4.7 4.3 1.3 6.1L12 17l-5.6 3 1.3-6.1L3 9.6l6.3-.7L12 3Z',
+		trash: 'M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13 M10 11v6 M14 11v6',
+		brain:
+			'M9 4a3 3 0 0 0-3 3 3 3 0 0 0-1 5.8A3 3 0 0 0 7 18a3 3 0 0 0 5 1V5a3 3 0 0 0-3-1Z M15 4a3 3 0 0 1 3 3 3 3 0 0 1 1 5.8A3 3 0 0 1 17 18a3 3 0 0 1-5 1V5a3 3 0 0 1 3-1Z M9 9h2 M13 13h2',
+		dots: 'M5 12h.01 M12 12h.01 M19 12h.01',
+		drag: 'M8 7h8 M8 12h8 M8 17h8'
 	};
 </script>
 
@@ -31,5 +40,6 @@
 	stroke-width="1.7"
 	stroke-linecap="round"
 	stroke-linejoin="round"
-	aria-hidden="true"><path d={paths[name] ?? paths.book} /></svg
+	aria-hidden="true"
+	><path d={paths[name] ?? paths.book} fill={filled.has(name) ? 'currentColor' : 'none'} /></svg
 >

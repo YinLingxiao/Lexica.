@@ -2,6 +2,7 @@ pub mod bootstrap;
 pub mod engine;
 pub mod model;
 pub mod provider;
+pub mod roots;
 pub mod store;
 
 /// 词典模块自己的错误类型。不依赖 memory/review（分层规则）。

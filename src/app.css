@@ -1,6 +1,6 @@
-/* Bundled Latin subsets of Inter and Newsreader (see devDependencies for provenance). */
+/* Self-hosted variable typefaces (Latin subsets bundled locally for zero-network offline rendering). */
 @font-face {
-	font-family: 'Inter Variable';
+	font-family: 'Lexica Sans';
 	font-style: normal;
 	font-weight: 100 900;
 	font-display: block;
@@ -20,61 +20,224 @@
 	font-display: block;
 	src: url('/fonts/newsreader-latin-wght-italic.woff2') format('woff2-variations');
 }
-:root {
+
+/* ══════════════════════════════════════════════════════════════════
+   1. 留白沙龙 · Warm Atelier (obsidian, Default)
+   Warm stone ground + sculpted borderless floating cards + bronze-gold accent
+   ══════════════════════════════════════════════════════════════════ */
+:root,
+:root[data-edition='obsidian'] {
 	font-synthesis: none;
 	color-scheme: light;
-	--bg: #ffffff;
-	--card: #ffffff;
-	--sidebar: #f3f3f3;
-	--fg: #292929;
-	--muted: #6b6b6b;
-	--accent: #4b4b4b;
-	--accent-hover: #303030;
-	--soft: #f1f1f1;
-	--line: #dedede;
-	--warm: #e9e9e9;
-	--kraft: #999999;
-	--danger: #555555;
-	--shadow: 0 1px 2px #2525250a;
-	--ease: cubic-bezier(0.32, 0.08, 0.24, 1);
+	--bg: #eae6de;
+	--card: #faf8f3;
+	--surface-elevated: #ffffff;
+	--sidebar: #e2ddd3;
+	--fg: #181614;
+	--muted: #666056;
+	--accent: #7a541d;
+	--accent-hover: #5c3e12;
+	--soft: #f0ece3;
+	--line: #dfd9cd;
+	--warm: #e6dfd0;
+	--kraft: #8a8173;
+	--danger: #a83328;
+	--cefr-bg: #f0deb8;
+	--cefr-fg: #613e06;
+	--cefr-border: #d6b87c;
+	--shadow: 0 20px 48px -16px rgba(24, 20, 14, 0.11), 0 4px 12px -2px rgba(24, 20, 14, 0.04);
+	--radius-card: 24px;
+	--panel-border: 0px;
+	--ease: cubic-bezier(0.22, 1, 0.36, 1);
 	--serif: 'Newsreader Variable', 'Source Serif 4', Georgia, 'Songti SC', serif;
 	--sans:
-		'Inter Variable', 'Segoe UI Variable Text', 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
+		'Lexica Sans', 'Segoe UI Variable Text', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei',
+		system-ui, sans-serif;
 }
-:root[data-theme='dark'] {
+
+/* ══════════════════════════════════════════════════════════════════
+   2. 极地群青 · Nordic Salon (cobalt)
+   Same floating borderless salon card format + cool Nordic mist & cobalt accent
+   ══════════════════════════════════════════════════════════════════ */
+:root[data-edition='cobalt'] {
+	--bg: #e9eef5;
+	--card: #fbfcfe;
+	--surface-elevated: #ffffff;
+	--sidebar: #e1e7f0;
+	--fg: #141821;
+	--muted: #586275;
+	--accent: #284c82;
+	--accent-hover: #1c3863;
+	--soft: #eef2f8;
+	--line: #d6dfec;
+	--warm: #dfe7f4;
+	--kraft: #7c879b;
+	--danger: #b83232;
+	--cefr-bg: #f5e5c6;
+	--cefr-fg: #6e480b;
+	--cefr-border: #e2c68e;
+	--shadow: 0 20px 48px -16px rgba(16, 28, 54, 0.1), 0 4px 12px -2px rgba(16, 28, 54, 0.04);
+	--radius-card: 24px;
+	--panel-border: 0px;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   3. 牛津辞书 · Oxford Broadsheet (vermilion)
+   Double ink rules, architectural 2px corners, classical broadsheet ledger
+   ══════════════════════════════════════════════════════════════════ */
+:root[data-edition='vermilion'] {
+	--bg: #f8f5ef;
+	--card: #fbf9f5;
+	--surface-elevated: #fffdf9;
+	--sidebar: #f0ebe1;
+	--fg: #1c1614;
+	--muted: #695b54;
+	--accent: #9e3324;
+	--accent-hover: #7d2518;
+	--soft: #f1ebe2;
+	--line: #d4cabd;
+	--warm: #ebe1d4;
+	--kraft: #8c7b70;
+	--danger: #a62626;
+	--cefr-bg: #f3dfc0;
+	--cefr-fg: #6e3f08;
+	--cefr-border: #d8b784;
+	--shadow: none;
+	--radius-card: 2px;
+	--panel-border: 1px;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Dark Mode Palettes per Theme
+   ══════════════════════════════════════════════════════════════════ */
+:root[data-theme='dark'],
+:root[data-theme='dark'][data-edition='obsidian'] {
 	color-scheme: dark;
-	--bg: #111111;
-	--card: #1d1d1d;
-	--sidebar: #0b0b0b;
-	--fg: #e8e8e8;
-	--muted: #ababab;
-	--accent: #c5c5c5;
-	--accent-hover: #e0e0e0;
-	--soft: #2b2b2b;
-	--line: #414141;
-	--warm: #333333;
-	--kraft: #909090;
-	--danger: #d0d0d0;
+	--bg: #0b0b0c;
+	--card: #151517;
+	--surface-elevated: #1c1c1f;
+	--sidebar: #070708;
+	--fg: #f0ece2;
+	--muted: #9c9588;
+	--accent: #deb058;
+	--accent-hover: #e8be6e;
+	--soft: #1d1d20;
+	--line: #2b2a2e;
+	--warm: #26231d;
+	--kraft: #756f63;
+	--danger: #e8685c;
+	--cefr-bg: #332610;
+	--cefr-fg: #ebb858;
+	--cefr-border: #543e19;
+	--shadow: 0 24px 56px -12px rgba(0, 0, 0, 0.65);
+}
+
+:root[data-theme='dark'][data-edition='cobalt'] {
+	color-scheme: dark;
+	--bg: #0b0e14;
+	--card: #141923;
+	--surface-elevated: #1a202c;
+	--sidebar: #07090e;
+	--fg: #eaeef6;
+	--muted: #8f9bb0;
+	--accent: #7aa2f7;
+	--accent-hover: #93b4fa;
+	--soft: #1c2230;
+	--line: #262e40;
+	--warm: #20293a;
+	--kraft: #69748a;
+	--danger: #eb6b6b;
+	--cefr-bg: #332612;
+	--cefr-fg: #ebb656;
+	--cefr-border: #523d1b;
+	--shadow: 0 24px 56px -12px rgba(0, 0, 0, 0.65);
+}
+
+:root[data-theme='dark'][data-edition='vermilion'] {
+	color-scheme: dark;
+	--bg: #12100e;
+	--card: #191614;
+	--surface-elevated: #201c19;
+	--sidebar: #0c0a09;
+	--fg: #efe9e2;
+	--muted: #a1948a;
+	--accent: #e06d58;
+	--accent-hover: #eb826f;
+	--soft: #221d1a;
+	--line: #332b26;
+	--warm: #2c231e;
+	--kraft: #7d7067;
+	--danger: #eb6868;
+	--cefr-bg: #362712;
+	--cefr-fg: #eab354;
+	--cefr-border: #573e1a;
 	--shadow: none;
 }
+
 @media (prefers-color-scheme: dark) {
-	:root:not([data-theme='light']) {
+	:root:not([data-theme='light']),
+	:root:not([data-theme='light'])[data-edition='obsidian'] {
 		color-scheme: dark;
-		--bg: #111111;
-		--card: #1d1d1d;
-		--sidebar: #0b0b0b;
-		--fg: #e8e8e8;
-		--muted: #ababab;
-		--accent: #c5c5c5;
-		--accent-hover: #e0e0e0;
-		--soft: #2b2b2b;
-		--line: #414141;
-		--warm: #333333;
-		--kraft: #909090;
-		--danger: #d0d0d0;
+		--bg: #0b0b0c;
+		--card: #151517;
+		--surface-elevated: #1c1c1f;
+		--sidebar: #070708;
+		--fg: #f0ece2;
+		--muted: #9c9588;
+		--accent: #deb058;
+		--accent-hover: #e8be6e;
+		--soft: #1d1d20;
+		--line: #2b2a2e;
+		--warm: #26231d;
+		--kraft: #756f63;
+		--danger: #e8685c;
+		--cefr-bg: #332610;
+		--cefr-fg: #ebb858;
+		--cefr-border: #543e19;
+		--shadow: 0 24px 56px -12px rgba(0, 0, 0, 0.65);
+	}
+	:root:not([data-theme='light'])[data-edition='cobalt'] {
+		color-scheme: dark;
+		--bg: #0b0e14;
+		--card: #141923;
+		--surface-elevated: #1a202c;
+		--sidebar: #07090e;
+		--fg: #eaeef6;
+		--muted: #8f9bb0;
+		--accent: #7aa2f7;
+		--accent-hover: #93b4fa;
+		--soft: #1c2230;
+		--line: #262e40;
+		--warm: #20293a;
+		--kraft: #69748a;
+		--danger: #eb6b6b;
+		--cefr-bg: #332612;
+		--cefr-fg: #ebb656;
+		--cefr-border: #523d1b;
+		--shadow: 0 24px 56px -12px rgba(0, 0, 0, 0.65);
+	}
+	:root:not([data-theme='light'])[data-edition='vermilion'] {
+		color-scheme: dark;
+		--bg: #12100e;
+		--card: #191614;
+		--surface-elevated: #201c19;
+		--sidebar: #0c0a09;
+		--fg: #efe9e2;
+		--muted: #a1948a;
+		--accent: #e06d58;
+		--accent-hover: #eb826f;
+		--soft: #221d1a;
+		--line: #332b26;
+		--warm: #2c231e;
+		--kraft: #7d7067;
+		--danger: #eb6868;
+		--cefr-bg: #362712;
+		--cefr-fg: #eab354;
+		--cefr-border: #573e1a;
 		--shadow: none;
 	}
 }
+
 * {
 	box-sizing: border-box;
 }
@@ -82,12 +245,29 @@ body {
 	margin: 0;
 	background: var(--bg);
 	color: var(--fg);
-	font: 14px/1.6 var(--sans);
+	font: 14px/1.65 var(--sans);
 	letter-spacing: -0.006em;
 	font-feature-settings: 'cv05', 'cv08', 'ss03';
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
+	caret-color: var(--accent);
 }
+
+::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background: var(--line);
+	border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: var(--kraft);
+}
+
 button,
 input,
 textarea,
@@ -110,23 +290,27 @@ button,
 	justify-content: center;
 	align-items: center;
 	gap: 8px;
-	padding: 9px 15px;
+	padding: 9px 16px;
 	border: 1px solid var(--line);
-	border-radius: 8px;
-	background: var(--card);
+	border-radius: 9px;
+	background: var(--surface-elevated);
 	color: var(--fg);
 	text-decoration: none;
 	transition:
 		background 0.16s var(--ease),
 		border-color 0.16s var(--ease),
-		color 0.16s var(--ease);
+		color 0.16s var(--ease),
+		transform 0.12s var(--ease);
 	font-size: 13px;
 	font-weight: 500;
 }
 button:hover:not(:disabled),
 .button:hover {
 	background: var(--soft);
-	border-color: color-mix(in srgb, var(--fg) 18%, var(--line));
+	border-color: color-mix(in srgb, var(--accent) 32%, var(--line));
+}
+button:active:not(:disabled) {
+	transform: translateY(1px);
 }
 button:disabled {
 	opacity: 0.45;
@@ -135,11 +319,19 @@ button:disabled {
 .primary {
 	background: var(--accent);
 	border-color: var(--accent);
-	color: var(--card);
+	color: #ffffff;
+	font-weight: 600;
+}
+:root[data-theme='dark'] .primary {
+	color: #0e100f;
 }
 .primary:hover:not(:disabled) {
 	background: var(--accent-hover);
-	color: var(--card);
+	border-color: var(--accent-hover);
+	color: #ffffff;
+}
+:root[data-theme='dark'] .primary:hover:not(:disabled) {
+	color: #0e100f;
 }
 .ghost {
 	border-color: transparent;
@@ -155,9 +347,9 @@ input,
 textarea,
 select {
 	color: var(--fg);
-	background: var(--card);
+	background: var(--surface-elevated);
 	border: 1px solid var(--line);
-	border-radius: 8px;
+	border-radius: 10px;
 	padding: 10px 14px;
 	max-width: 100%;
 	transition:
@@ -175,6 +367,7 @@ textarea::placeholder {
 input:focus,
 textarea:focus {
 	border-color: var(--accent);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
 }
 a {
 	color: var(--accent);
@@ -188,17 +381,16 @@ p {
 	margin-top: 0;
 }
 h1 {
-	font-size: 28px;
-	line-height: 1.25;
-	letter-spacing: -0.022em;
-	font-weight: 500;
+	font: 500 34px/1.18 var(--serif);
+	letter-spacing: -0.025em;
 	margin-bottom: 10px;
+	text-wrap: balance;
 }
 h2 {
-	font-size: 16px;
-	font-weight: 500;
+	font: 500 18px/1.3 var(--serif);
 	letter-spacing: -0.014em;
 	margin-bottom: 6px;
+	text-wrap: balance;
 }
 h3 {
 	font-size: 14px;
@@ -213,26 +405,39 @@ h3 {
 }
 .page {
 	width: 100%;
-	max-width: 1100px;
+	max-width: 1120px;
 	margin: 0 auto;
-	padding: 36px 44px 48px;
+	padding: 40px 48px 60px;
 }
 .panel {
 	background: var(--card);
-	border: 1px solid var(--line);
-	border-radius: 12px;
+	border: var(--panel-border, 0px) solid var(--line);
+	border-radius: var(--radius-card);
 	box-shadow: var(--shadow);
-	padding: 24px;
+	padding: 28px 34px;
 }
+
+/* 牛津辞书画报 (vermilion): crisp double-top-rule broadsheet panels */
+:root[data-edition='vermilion'] .panel {
+	border-left: 0;
+	border-right: 0;
+	border-top: 2px solid var(--fg);
+	border-bottom: 1px solid var(--line);
+	border-radius: 0;
+	padding: 26px 4px;
+	background: transparent;
+}
+
 .section-heading {
 	display: flex;
-	align-items: center;
+	align-items: baseline;
 	justify-content: space-between;
 	gap: 12px;
 	margin-bottom: 20px;
 }
 .section-heading h2 {
 	margin: 0;
+	font: italic 500 20px/1.2 var(--serif);
 }
 .section-heading a {
 	font-size: 12px;
@@ -242,24 +447,25 @@ h3 {
 	display: inline-flex;
 	align-items: center;
 	gap: 5px;
-	padding: 3px 8px;
-	border-radius: 4px;
+	padding: 3px 9px;
+	border-radius: 6px;
 	font-size: 11px;
+	font-weight: 500;
 	color: var(--accent);
-	background: color-mix(in srgb, var(--accent) 10%, transparent);
+	background: color-mix(in srgb, var(--accent) 12%, transparent);
 	white-space: nowrap;
 }
 .error {
 	color: var(--danger);
-	background: color-mix(in srgb, var(--danger) 7%, var(--card));
-	border: 1px solid color-mix(in srgb, var(--danger) 25%, var(--line));
+	background: color-mix(in srgb, var(--danger) 8%, var(--surface-elevated));
+	border: 1px solid color-mix(in srgb, var(--danger) 28%, var(--line));
 	padding: 12px 16px;
-	border-radius: 8px;
+	border-radius: 10px;
 	overflow-wrap: anywhere;
 }
 .empty {
 	text-align: center;
-	padding: 52px 24px;
+	padding: 56px 24px;
 }
 .empty-icon {
 	display: flex;
@@ -280,23 +486,22 @@ h3 {
 .metric-grid {
 	display: grid;
 	grid-template-columns: repeat(4, minmax(0, 1fr));
-	gap: 12px;
+	gap: 14px;
 }
 .metric {
 	padding: 18px 20px;
 	border: 1px solid var(--line);
-	background: var(--card);
-	border-radius: 12px;
+	background: var(--surface-elevated);
+	border-radius: 14px;
 }
 .metric dt {
-	font-size: 11px;
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
+	font: italic 500 13px var(--serif);
 	color: var(--muted);
 }
 .metric dd {
 	margin: 8px 0 0;
-	font: 500 30px/1.1 var(--serif);
+	font: 500 34px/1.1 var(--serif);
+	font-variant-numeric: tabular-nums;
 	letter-spacing: -0.02em;
 	color: var(--fg);
 }
@@ -304,32 +509,32 @@ kbd {
 	display: inline-block;
 	border: 1px solid var(--line);
 	background: var(--bg);
-	border-radius: 4px;
+	border-radius: 5px;
 	color: var(--muted);
 	padding: 0 5px;
 	font: 500 10px/1.9 var(--sans);
+	font-variant-numeric: tabular-nums;
 }
 .primary kbd {
 	background: transparent;
 	color: inherit;
 	border-color: currentColor;
-	opacity: 0.6;
+	opacity: 0.65;
 }
 .skeleton {
 	height: 150px;
-	background: linear-gradient(110deg, var(--soft) 20%, var(--card) 40%, var(--soft) 60%);
+	background: linear-gradient(110deg, var(--soft) 20%, var(--surface-elevated) 40%, var(--soft) 60%);
 	background-size: 200% 100%;
 	animation: shimmer 1.5s infinite;
-	border-radius: 12px;
+	border-radius: var(--radius-card);
 }
 @keyframes shimmer {
 	to {
 		background-position: -200% 0;
 	}
 }
-/* Shared entrance for content that swaps in place (entries, dropdowns, feedback). */
 .rise {
-	animation: rise 0.26s var(--ease) both;
+	animation: rise 0.28s var(--ease) both;
 }
 @keyframes rise {
 	from {
@@ -337,10 +542,6 @@ kbd {
 		transform: translateY(6px);
 	}
 }
-/* Theme switch, direction-aware.
-   dark→light (expand): the new light snapshot grows from the click point.
-   light→dark (shrink): the old light snapshot shrinks into the click point,
-   uncovering the dark snapshot beneath it. */
 html[data-revealing]::view-transition-old(root),
 html[data-revealing]::view-transition-new(root) {
 	animation: none;
@@ -377,7 +578,7 @@ html[data-revealing='shrink']::view-transition-new(root) {
 	}
 }
 ::selection {
-	background: color-mix(in srgb, var(--accent) 20%, transparent);
+	background: color-mix(in srgb, var(--accent) 22%, transparent);
 }
 :root[data-font-size='large'] .reading {
 	font-size: 21px;
@@ -389,17 +590,17 @@ html[data-revealing='shrink']::view-transition-new(root) {
 }
 @media (max-width: 760px) {
 	.page {
-		padding: 24px 20px;
+		padding: 24px 20px 76px;
 	}
 	h1 {
-		font-size: 24px;
+		font-size: 26px;
 	}
 	.metric-grid {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 10px;
 	}
 	.panel {
-		padding: 20px;
+		padding: 22px;
 	}
 }
 @media (prefers-reduced-motion: reduce) {

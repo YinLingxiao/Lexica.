@@ -3,7 +3,7 @@
 	const parts = $derived.by(() => {
 		if (!word) return [text];
 		const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-		return text.split(new RegExp(`(\\b${escaped}\\b)`, 'gi'));
+		return text.split(new RegExp(`(\\b${escaped}(?:s|es|ed|ing|d)?\\b)`, 'gi'));
 	});
 </script>
 

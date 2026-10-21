@@ -15,7 +15,9 @@ use crate::error::AppError;
 use crate::memory::model::MemoryStatus;
 use crate::memory::service::MemoryService;
 use crate::memory::service::StatsSummary;
-use crate::review::model::{Hint, ReviewFeedback, ReviewItem};
+use crate::review::model::{
+    Hint, ReviewFeedback, ReviewItem, StudyGrade, StudyPriority, StudySessionGroup, WordbookInfo,
+};
 use crate::review::service::ReviewService;
 
 /// 所有 command 统一入口：把 DB 工作放到阻塞线程池执行，
@@ -353,6 +355,68 @@ pub async fn rebuild_memory_projection(state: State<'_, AppState>) -> Result<usi
 
 // ── 复习 ──────────────────────────────────────────────────
 
+#[tauri::command]
+pub async fn study_group(
+    state: State<'_, AppState>,
+    wordbook: String,
+    daily_new_limit: u32,
+    priority: String,
+) -> Result<StudySessionGroup, AppError> {
+    let priority = match priority.as_str() {
+        "mixed" => StudyPriority::Mixed,
+        "new_first" => StudyPriority::NewFirst,
+        "review_first" => StudyPriority::ReviewFirst,
+        _ => return Err(crate::review::ReviewError::NoWordData.into()),
+    };
+    with_db(&state, move |conn| {
+        Ok(ReviewService.study_group(conn, &wordbook, daily_new_limit, priority, Utc::now())?)
+    })
+    .await
+}
+
+#[tauri::command]
+pub async fn study_grade(
+    state: State<'_, AppState>,
+    word_id: WordId,
+    grade: StudyGrade,
+) -> Result<ReviewFeedback, AppError> {
+    with_db(&state, move |conn| {
+        Ok(ReviewService.study_grade(conn, word_id, grade, Utc::now())?)
+    })
+    .await
+}
+
+#[tauri::command]
+pub async fn wordbooks_list(state: State<'_, AppState>) -> Result<Vec<WordbookInfo>, AppError> {
+    with_db(&state, |conn| Ok(ReviewService.wordbooks_list(conn)?)).await
+}
+
+#[tauri::command]
+pub async fn custom_wordbook_toggle(
+    state: State<'_, AppState>,
+    word_id: WordId,
+    added: bool,
+) -> Result<(), AppError> {
+    with_db(&state, move |conn| {
+        Ok(ReviewService.custom_wordbook_toggle(conn, word_id, added)?)
+    })
+    .await
+}
+
+#[tauri::command]
+pub async fn ai_enrich_words(
+    state: State<'_, AppState>,
+    word_ids: Vec<i64>,
+    exam_style: bool,
+) -> Result<usize, AppError> {
+    let db = state.db();
+    tauri::async_runtime::spawn_blocking(move || {
+        crate::ai::enrich_words(&db, &word_ids, exam_style, crate::ai::key_store())
+    })
+    .await
+    .map_err(|e| AppError::TaskJoin(e.to_string()))?
+}
+
 /// 复习队列（旧接口，保留兼容）：题目条目，不含答案。
 #[tauri::command]
 pub async fn review_queue(state: State<'_, AppState>) -> Result<Vec<ReviewItem>, AppError> {
@@ -460,7 +524,9 @@ pub async fn submit_review(
 
 /// 读取 AI 配置视图（has_key 布尔，绝不回传密钥本身）。
 #[tauri::command]
-pub async fn ai_config_get(state: State<'_, AppState>) -> Result<crate::ai::AiConfigView, AppError> {
+pub async fn ai_config_get(
+    state: State<'_, AppState>,
+) -> Result<crate::ai::AiConfigView, AppError> {
     with_db(&state, move |conn| {
         let cfg = crate::ai::load_config(conn).map_err(AppError::from)?;
         let has_key = crate::ai::key_store().get()?.is_some();
@@ -541,8 +607,8 @@ pub async fn ai_generate_examples(
         }
         let mut words = Vec::new();
         for item in &items {
-            if let Some(w) =
-                crate::ai::load_gen_word(conn, item.word_id, item.sense_id).map_err(AppError::from)?
+            if let Some(w) = crate::ai::load_gen_word(conn, item.word_id, item.sense_id)
+                .map_err(AppError::from)?
             {
                 words.push(w);
             }

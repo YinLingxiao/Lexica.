@@ -8,15 +8,8 @@
 		dueLabel,
 		type LibraryPage
 	} from '$lib/api';
+	import { page } from '$app/state';
 	import Icon from '$lib/components/Icon.svelte';
-	let query = $state('');
-	let filter = $state('all');
-	let offset = $state(0);
-	let data = $state<LibraryPage>({ words: [], total: 0 });
-	let loading = $state(true);
-	let error = $state('');
-	let busy = $state<number | null>(null);
-	let generation = 0;
 	const filters = [
 		['all', 'All'],
 		['bookmarked', 'Saved'],
@@ -25,6 +18,18 @@
 		['stable', 'Stable'],
 		['ignored', 'Paused']
 	];
+	// 支持 /library?filter=bookmarked 这类深链接；未知值回退到 all。
+	const initialFilter = page.url.searchParams.get('filter');
+	let query = $state('');
+	let filter = $state(
+		filters.some(([key]) => key === initialFilter) ? (initialFilter as string) : 'all'
+	);
+	let offset = $state(0);
+	let data = $state<LibraryPage>({ words: [], total: 0 });
+	let loading = $state(true);
+	let error = $state('');
+	let busy = $state<number | null>(null);
+	let generation = 0;
 	async function load(q = query, f = filter, o = offset, token = ++generation) {
 		loading = true;
 		error = '';

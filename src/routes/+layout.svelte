@@ -4,7 +4,11 @@
 	import { page } from '$app/state';
 	import Icon from '$lib/components/Icon.svelte';
 	import { isPreview } from '$lib/api';
-	import { preferences, loadPreferences, applyPreferences } from '$lib/preferences.svelte';
+	import {
+		preferences,
+		loadPreferences,
+		applyPreferences
+	} from '$lib/preferences.svelte';
 	import { dictionarySetup, runDictionarySetup } from '$lib/dictionary-setup.svelte';
 	let { children } = $props();
 	let ready = $state(false);
@@ -121,6 +125,15 @@
 			</div>{/if}
 		<div id="content" tabindex="-1">{@render children()}</div>
 	</div>
+	<nav class="bottom-nav" aria-label="Main (compact)">
+		{#each navigation as n}<a
+				href={n.href}
+				aria-label={n.label}
+				class:active={page.url.pathname === n.href}
+				aria-current={page.url.pathname === n.href ? 'page' : undefined}
+				><Icon name={n.icon} size={20} /><span aria-hidden="true">{n.label}</span></a
+			>{/each}
+	</nav>
 </div>
 {#if dictionarySetup.active}<div
 		class="setup-overlay"
@@ -341,9 +354,47 @@
 	.app-shell:not(.sidebar-animated) .collapse-toggle :global(svg) {
 		transition: none;
 	}
+	.bottom-nav {
+		display: none;
+	}
 	@media (max-width: 760px) {
 		.app-shell {
 			display: block;
+			padding-bottom: calc(60px + env(safe-area-inset-bottom));
+		}
+		.sidebar nav {
+			display: none;
+		}
+		.sidebar-head {
+			flex: 1;
+		}
+		.bottom-nav {
+			display: grid;
+			grid-template-columns: repeat(5, 1fr);
+			position: fixed;
+			inset: auto 0 0 0;
+			z-index: 30;
+			height: calc(60px + env(safe-area-inset-bottom));
+			padding-bottom: env(safe-area-inset-bottom);
+			background: var(--sidebar);
+			border-top: 1px solid var(--line);
+		}
+		.bottom-nav a {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 3px;
+			text-decoration: none;
+			color: var(--muted);
+			font-size: 10px;
+		}
+		.bottom-nav a.active {
+			color: var(--accent);
+		}
+		.bottom-nav a:focus-visible {
+			outline: 2px solid var(--accent);
+			outline-offset: -4px;
 		}
 		.sidebar {
 			position: sticky;

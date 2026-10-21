@@ -15,6 +15,7 @@
 		type AppInfo
 	} from '$lib/api';
 	import Icon from '$lib/components/Icon.svelte';
+	import StudySettingsPanel from '$lib/components/StudySettingsPanel.svelte';
 	let info = $state<AppInfo | null>(null);
 	let error = $state('');
 	let logoError = $state('');
@@ -147,6 +148,17 @@
 			</div>
 		</div>
 		<div class="setting-row">
+			<h3>Style theme</h3>
+			<div class="segmented">
+				{#each [['obsidian', '留白沙龙'], ['cobalt', '极地群青'], ['vermilion', '牛津辞书']] as [key, label]}<button
+						aria-pressed={preferences.edition === key}
+						class:chosen={preferences.edition === key}
+						onclick={() => (preferences.edition = key as 'obsidian' | 'cobalt' | 'vermilion')}
+						>{label}</button
+					>{/each}
+			</div>
+		</div>
+		<div class="setting-row">
 			<h3>Lookup</h3>
 			<div class="segmented">
 				{#each [['guided', 'Context first'], ['full', 'Full entry']] as [key, label]}<button
@@ -167,6 +179,10 @@
 			</div>
 		</div>
 	</section>
+	<details class="study-section" id="study">
+		<summary><h2>学习设置</h2><Icon name="chevron-right" size={16} /></summary>
+		<div class="study-body"><StudySettingsPanel /></div>
+	</details>
 	<section class="panel dictionary">
 		<div class="section-heading"><h2>Dictionary</h2></div>
 		{#if error}<p class="error" role="alert">{error}</p>
@@ -343,6 +359,38 @@
 	}
 	.settings > .panel {
 		margin-bottom: 20px;
+	}
+	.study-section {
+		margin-bottom: 20px;
+	}
+	.study-section summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		cursor: pointer;
+		list-style: none;
+		padding: 16px 20px;
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: 12px;
+		color: var(--fg);
+	}
+	.study-section summary::-webkit-details-marker {
+		display: none;
+	}
+	.study-section summary h2 {
+		font-size: 15px;
+		margin: 0;
+	}
+	.study-section summary :global(svg) {
+		color: var(--muted);
+		transition: transform 0.16s var(--ease);
+	}
+	.study-section[open] summary :global(svg) {
+		transform: rotate(90deg);
+	}
+	.study-body {
+		margin-top: 20px;
 	}
 	.setting-row {
 		display: flex;
@@ -577,9 +625,10 @@
 		}
 		.segmented {
 			width: 100%;
+			flex-wrap: wrap;
 		}
 		.segmented button {
-			flex: 1;
+			flex: 1 1 auto;
 		}
 		.import-row {
 			flex-direction: column;

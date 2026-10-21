@@ -96,6 +96,22 @@ export interface Sense {
 	examples: Example[];
 }
 
+export interface WordFormEntry {
+	label: string;
+	form: string;
+}
+
+export interface RelatedWordItem {
+	word: string;
+	pos: string | null;
+	gloss: string;
+}
+
+export interface RootPart {
+	part: string;
+	meaning: string;
+}
+
 export interface WordEntry {
 	id: number;
 	word: string;
@@ -107,6 +123,17 @@ export interface WordEntry {
 	antonyms: string[];
 	word_family: string[];
 	frequency_rank: number | null;
+	tags?: string[];
+	collins?: number | null;
+	oxford?: boolean;
+	mnemonic?: string | null;
+	roots?: RootPart[];
+	derivatives?: RelatedWordItem[];
+	synonyms_detailed?: RelatedWordItem[];
+	antonyms_detailed?: RelatedWordItem[];
+	lookalikes?: RelatedWordItem[];
+	forms?: WordFormEntry[];
+	exam_example?: Example | null;
 }
 
 export type LookupOutcome =
@@ -258,6 +285,57 @@ export interface FadingWord {
 	display: string;
 	high_priority: boolean;
 	next_review_at: string | null;
+}
+
+// ── Study (wordbooks + graded session cards) ──────────────
+
+export type StudyPriority = 'mixed' | 'new_first' | 'review_first';
+export type StudyGrade = 'know' | 'hazy' | 'forgot';
+
+export interface WordbookInfo {
+	id: string;
+	name: string;
+	total_words: number;
+	learned_words: number;
+}
+
+export interface StudyCardEntry {
+	entry: WordEntry;
+	item: ReviewItem;
+	is_new: boolean;
+	bookmarked: boolean;
+	in_custom_wordbook: boolean;
+}
+
+export interface StudySessionGroup {
+	cards: StudyCardEntry[];
+	due_count: number;
+	new_count: number;
+	today_learned_new: number;
+}
+
+export function studyGroup(
+	wordbook: string,
+	dailyNewLimit: number,
+	priority: StudyPriority
+): Promise<StudySessionGroup> {
+	return invoke<StudySessionGroup>('study_group', { wordbook, dailyNewLimit, priority });
+}
+
+export function studyGrade(wordId: number, grade: StudyGrade): Promise<ReviewFeedback> {
+	return invoke<ReviewFeedback>('study_grade', { wordId, grade });
+}
+
+export function wordbooksList(): Promise<WordbookInfo[]> {
+	return invoke<WordbookInfo[]>('wordbooks_list');
+}
+
+export function customWordbookToggle(wordId: number, added: boolean): Promise<void> {
+	return invoke<void>('custom_wordbook_toggle', { wordId, added });
+}
+
+export function aiEnrichWords(wordIds: number[], examStyle: boolean): Promise<number> {
+	return invoke<number>('ai_enrich_words', { wordIds, examStyle });
 }
 
 export async function reviewQueue(): Promise<ReviewItem[]> {

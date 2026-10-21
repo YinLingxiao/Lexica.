@@ -12,7 +12,7 @@ pub mod review;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-		.plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_opener::init())
         .setup(|builder| {
             app::setup(builder)?;
             Ok(())
@@ -30,6 +30,11 @@ pub fn run() {
             commands::rebuild_memory_projection,
             commands::review_queue,
             commands::review_group,
+            commands::study_group,
+            commands::study_grade,
+            commands::wordbooks_list,
+            commands::custom_wordbook_toggle,
+            commands::ai_enrich_words,
             commands::practice_check,
             commands::practice_hint,
             commands::ai_config_get,

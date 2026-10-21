@@ -378,9 +378,9 @@ for (const width of [480, 1180])
 				.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
 				.toBe(true);
 			// Landmark per route: the home page has no h1 (search-first layout);
-			// the review page in its empty preview state shows the empty state heading.
+			// the review page shows the study card heading (h2) or empty state heading.
 			if (route === '/') await expect(page.getByRole('combobox', { name: 'Search for a word' })).toBeVisible();
-			else if (route === '/review') await expect(page.getByRole('heading', { name: 'Nothing due' })).toBeVisible();
+			else if (route === '/review') await expect(page.locator('h1, h2').first()).toBeVisible();
 			else await expect(page.locator('h1')).toBeVisible();
 		}
 		if (width === 480)
@@ -911,4 +911,50 @@ test('AI settings: DeepSeek defaults, save, persistence and connection errors', 
 	await page.getByRole('button', { name: 'Remove key' }).click();
 	await expect(page.getByText('AI settings saved.')).toBeVisible();
 	await expect(page.getByText('· stored')).toHaveCount(0);
+});
+
+test('study card: syllable headword, 8 extension tabs, floating actions, and study settings', async ({
+	page
+}) => {
+	await page.goto('/review');
+	// Surgery is the first preview study card with syllable splitting enabled by default.
+	await expect(page.getByRole('heading', { name: 'surgery' })).toBeVisible();
+	await expect(page.locator('.headword')).toContainText('sur·ge·ry');
+	await expect(page.locator('.pos-pill')).toHaveText('noun');
+	await expect(page.locator('.level-pill').first()).toHaveText('B2');
+
+	// Tab 1: Examples + Chinese summary
+	await expect(page.getByText('He needs surgery to repair his broken leg.')).toBeVisible();
+	await expect(page.getByText('他需要手术来修复骨折的腿。')).toBeVisible();
+	await expect(page.locator('.translation-zh')).toContainText('外科手术');
+
+	// Tab 2: Mnemonic
+	await page.getByRole('tab', { name: '助记' }).click();
+	await expect(page.locator('.mnemonic-text')).toContainText('cheirourgia');
+
+	// Tab 3: Roots & affixes
+	await page.getByRole('tab', { name: '词根词缀' }).click();
+	await expect(page.locator('.root-part').first()).toHaveText('surg');
+
+	// Tab 4: Derivatives
+	await page.getByRole('tab', { name: '派生' }).click();
+	await expect(page.getByText('microsurgery')).toBeVisible();
+	await expect(page.getByText('显微外科')).toBeVisible();
+
+	// Tab 7: Lookalikes
+	await page.getByRole('tab', { name: '形近词' }).click();
+	await expect(page.getByText('sugary')).toBeVisible();
+	await expect(page.getByText('surely')).toBeVisible();
+	await expect(page.getByText('surety')).toBeVisible();
+
+	// Tab 8: Word forms
+	await page.getByRole('tab', { name: '词形变化' }).click();
+	await expect(page.getByText('Plural')).toBeVisible();
+	await expect(page.getByText('surgeries')).toBeVisible();
+
+	// Open Study Settings drawer and toggle syllable splitting
+	await page.locator('.dots-btn').click();
+	await expect(page.getByRole('heading', { name: '词书与计划' })).toBeVisible();
+	await page.getByRole('switch', { name: '自动拆分音节' }).click();
+	await expect(page.locator('.headword')).toHaveText('surgery');
 });

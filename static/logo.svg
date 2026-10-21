@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="160" y1="40" x2="864" y2="984" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#262628" />
+      <stop offset="50%" stop-color="#171719" />
+      <stop offset="100%" stop-color="#0E0E10" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="36%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.09" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="rim" x1="512" y1="40" x2="512" y2="984" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.26" />
+      <stop offset="45%" stop-color="#FFFFFF" stop-opacity="0.07" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.03" />
+    </linearGradient>
+    <linearGradient id="card-front" x1="260" y1="180" x2="740" y2="840" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FAF9F6" />
+      <stop offset="100%" stop-color="#E8E6E0" />
+    </linearGradient>
+    <linearGradient id="card-back" x1="300" y1="160" x2="780" y2="800" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.05" />
+    </linearGradient>
+    <filter id="card-shadow" x="-15%" y="-12%" width="135%" height="135%">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#000000" flood-opacity="0.55" />
+    </filter>
+  </defs>
+
+  <!-- Outer Squircle -->
+  <rect x="40" y="40" width="944" height="944" rx="220" fill="url(#bg)" />
+  <rect x="40" y="40" width="944" height="944" rx="220" fill="url(#glow)" />
+  <rect x="43" y="43" width="938" height="938" rx="217" stroke="url(#rim)" stroke-width="6" />
+
+  <!-- Minimalist Fanned Back Book Page / Lexicon Card -->
+  <g transform="rotate(7 536 512)">
+    <rect x="296" y="204" width="480" height="616" rx="64" fill="url(#card-back)" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="4" />
+  </g>
+
+  <!-- Main Front Dictionary Card / Page -->
+  <g filter="url(#card-shadow)">
+    <rect x="244" y="196" width="496" height="632" rx="68" fill="url(#card-front)" />
+    <!-- Subtle inner page border -->
+    <rect x="268" y="220" width="448" height="584" rx="48" stroke="#161618" stroke-opacity="0.08" stroke-width="3" />
+    <!-- Minimalist top-right bookmark ribbon cutout -->
+    <path d="M612 196H656V296L634 276L612 296V196Z" fill="#18181A" />
+    <!-- Subtle editorial entry rule lines at bottom of page -->
+    <line x1="328" y1="716" x2="548" y2="716" stroke="#161618" stroke-opacity="0.16" stroke-width="10" stroke-linecap="round" />
+    <line x1="328" y1="746" x2="464" y2="746" stroke="#161618" stroke-opacity="0.10" stroke-width="10" stroke-linecap="round" />
+  </g>
+
+  <!-- Authentic Newsreader Editorial Serif Monogram 'l.' -->
+  <text x="488" y="602" text-anchor="middle" fill="#141416" font-family="Newsreader, Georgia, serif" font-style="italic" font-weight="500" font-size="430" letter-spacing="-10">l<tspan font-style="normal" fill="#505056">.</tspan></text>
+</svg>

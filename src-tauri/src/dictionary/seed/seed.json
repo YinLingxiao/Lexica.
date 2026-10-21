@@ -1710,6 +1710,221 @@
         "third_person": "yields",
         "ing": "yielding"
       }
+    },
+    {
+      "word": "surgery",
+      "phonetic": "/ˈsɜːdʒəri/",
+      "frequency_rank": 2100,
+      "tags": ["cet4", "cet6", "ky", "ielts", "toefl", "oxford"],
+      "collins": 4,
+      "oxford": true,
+      "mnemonic": "surgery 来自希腊语 cheirourgia，cheir 表示手，ergon 意为工作，指用手操作的外科手术，在医疗领域至关重要。",
+      "roots": [
+        { "part": "surg", "meaning": "上升，升起" },
+        { "part": "-ory²", "meaning": "构成名词，表示‘...的地方’或‘与...相关的事物’" }
+      ],
+      "senses": [
+        {
+          "pos": "noun",
+          "english": "Medical treatment that involves cutting the body to fix injuries or diseases.",
+          "chinese": "n. 外科手术",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "He needs surgery to repair his broken leg.",
+              "translation": "他需要手术来修复骨折的腿。"
+            }
+          ]
+        },
+        {
+          "pos": "noun",
+          "english": "A place where doctors, dentists, or vets see patients.",
+          "chinese": "n. 诊所",
+          "level": "B2",
+          "examples": []
+        },
+        {
+          "pos": "noun",
+          "english": "The time when a doctor, dentist, or vet is available to see patients.",
+          "chinese": "n. 门诊时间",
+          "level": "R",
+          "examples": []
+        },
+        {
+          "pos": "noun",
+          "english": "A time when people can meet their Member of Parliament to ask questions.",
+          "chinese": "n. 议员接待时间",
+          "level": "R",
+          "examples": []
+        }
+      ],
+      "collocations": [
+        { "text": "undergo surgery", "gloss": "接受手术" },
+        { "text": "perform surgery", "gloss": "进行外科手术" },
+        { "text": "cosmetic surgery", "gloss": "整形手术" },
+        { "text": "emergency surgery", "gloss": "紧急手术" }
+      ],
+      "synonyms": ["operation", "procedure"],
+      "antonyms": [],
+      "word_family": ["microsurgery n. 显微外科"],
+      "forms": {
+        "plural": "surgeries"
+      }
+    },
+    {
+      "word": "sugary",
+      "phonetic": "/ˈʃʊɡəri/",
+      "frequency_rank": 11500,
+      "tags": ["cet6", "ielts"],
+      "collins": 1,
+      "oxford": false,
+      "senses": [
+        {
+          "pos": "adj.",
+          "english": "containing sugar or tasting sweet like sugar; excessively sentimental",
+          "chinese": "adj. 含糖的，过于甜蜜的",
+          "level": "B2",
+          "examples": [
+            {
+              "text": "Dentists advise children to cut down on sugary drinks.",
+              "translation": "牙医建议儿童少喝含糖饮料。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "sugary drinks", "gloss": "含糖饮料" },
+        { "text": "sugary snacks", "gloss": "高糖零食" }
+      ],
+      "synonyms": ["sweet", "syrupy"],
+      "antonyms": ["bitter", "unsweetened"],
+      "word_family": ["sugar n. 糖"],
+      "forms": {}
+    },
+    {
+      "word": "surely",
+      "phonetic": "/ˈʃʊrli/",
+      "frequency_rank": 1800,
+      "tags": ["cet4", "cet6", "ky", "oxford"],
+      "collins": 4,
+      "oxford": true,
+      "senses": [
+        {
+          "pos": "adv.",
+          "english": "used to express a strong belief that something is true or certain",
+          "chinese": "adv. 肯定地，不会吧，必定，当然",
+          "level": "B1",
+          "examples": [
+            {
+              "text": "Surely we can find a simpler solution before tomorrow.",
+              "translation": "明天之前我们肯定能找到一个更简单的解决办法。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "slowly but surely", "gloss": "缓慢但稳步地" }
+      ],
+      "synonyms": ["certainly", "undoubtedly", "definitely"],
+      "antonyms": ["doubtfully", "uncertainly"],
+      "word_family": ["sure adj. 确信的"],
+      "forms": {}
+    },
+    {
+      "word": "surety",
+      "phonetic": "/ˈʃʊrəti/",
+      "frequency_rank": 15000,
+      "tags": ["gre", "ielts"],
+      "collins": 1,
+      "oxford": false,
+      "senses": [
+        {
+          "pos": "n.",
+          "english": "money given as a guarantee that someone will do something, or a person who accepts responsibility for another's obligation",
+          "chinese": "n. 保证金，担保人",
+          "level": "C1",
+          "examples": [
+            {
+              "text": "His uncle agreed to act as surety for the loan.",
+              "translation": "他叔叔同意为这笔贷款做担保人。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "act as surety", "gloss": "充当担保人" },
+        { "text": "stand surety for sb", "gloss": "为某人作保" }
+      ],
+      "synonyms": ["guarantor", "pledge", "security"],
+      "antonyms": [],
+      "word_family": ["sure adj. 可靠的"],
+      "forms": {
+        "plural": "sureties"
+      }
+    },
+    {
+      "word": "religion",
+      "phonetic": "/rɪˈlɪdʒən/",
+      "frequency_rank": 1200,
+      "tags": ["cet4", "cet6", "ky", "ielts", "toefl", "oxford"],
+      "collins": 4,
+      "oxford": true,
+      "mnemonic": "religion 词根 lig- 来自拉丁语 religare 表示重新绑定，指与神或信仰体系的联系，演变为宗教概念。",
+      "roots": [
+        { "part": "relig", "meaning": "捆绑，连接；特指与神的连接" },
+        { "part": "-ion", "meaning": "构成名词，表示动作、过程、状态或结果" }
+      ],
+      "senses": [
+        {
+          "pos": "noun",
+          "english": "Belief in a god or gods and the worship activities connected with them",
+          "chinese": "n. 宗教信仰",
+          "level": "B1",
+          "examples": [
+            {
+              "text": "Many people find comfort in religion during difficult times",
+              "translation": "许多人在困难时期从宗教中寻求安慰。"
+            }
+          ]
+        },
+        {
+          "pos": "noun",
+          "english": "A specific system of faith based on belief in a particular god or gods",
+          "chinese": "n. 宗教",
+          "level": "B1",
+          "examples": [
+            {
+              "text": "Different religions have different beliefs about the afterlife",
+              "translation": "不同的宗教对来世有不同的信仰。"
+            }
+          ]
+        },
+        {
+          "pos": "noun",
+          "english": "Something that is very important in your life, like a strong belief",
+          "chinese": "n. 信仰",
+          "level": "R",
+          "examples": [
+            {
+              "text": "For some fans, supporting their team is like a religion",
+              "translation": "对一些粉丝来说，支持自己的球队就像一种信仰。"
+            }
+          ]
+        }
+      ],
+      "collocations": [
+        { "text": "freedom of religion", "gloss": "宗教自由" },
+        { "text": "practice a religion", "gloss": "信奉某种宗教" }
+      ],
+      "synonyms": ["creed", "sect", "cult", "persuasion", "faith", "devotion"],
+      "antonyms": ["godlessness", "agnosticism", "atheism", "secularism", "doubt"],
+      "word_family": [
+        "religionist n. 宗教信徒；笃信宗教者",
+        "irreligion n. 无宗教信仰；对宗教漠不关心"
+      ],
+      "forms": {
+        "plural": "religions"
+      }
     }
   ]
 }

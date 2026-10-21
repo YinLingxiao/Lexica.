@@ -6,13 +6,73 @@ use rusqlite::{params, Connection, OptionalExtension};
 use serde::Serialize;
 
 use super::grader;
-use super::model::{Hint, PromptSource, ReviewFeedback, ReviewItem};
+use super::model::{
+    Hint, PromptSource, ReviewFeedback, ReviewItem, StudyCardEntry, StudyGrade, StudyPriority,
+    StudySessionGroup, WordbookInfo,
+};
 use super::ReviewError;
 use crate::database::fmt_ts;
 use crate::dictionary::engine;
 use crate::dictionary::model::WordEntry;
 use crate::domain::{ExampleId, ReviewId, SenseId, WordId};
+use crate::memory::model::RecallQuality;
 use crate::memory::service::MemoryService;
+
+/// Feature-owned tables: older installations have no study-plan migration yet.
+pub fn ensure_study_schema(conn: &Connection) -> rusqlite::Result<()> {
+    conn.execute_batch(
+        "CREATE TABLE IF NOT EXISTS custom_wordbook_words (
+             word_id INTEGER PRIMARY KEY REFERENCES words(id) ON DELETE CASCADE,
+             added_at TEXT NOT NULL DEFAULT ''
+         );
+         CREATE TABLE IF NOT EXISTS word_enrichments (
+             word_id INTEGER PRIMARY KEY REFERENCES words(id) ON DELETE CASCADE,
+             mnemonic TEXT,
+             roots_json TEXT NOT NULL DEFAULT '[]',
+             exam_example_text TEXT,
+             exam_example_translation TEXT,
+             standard_example_text TEXT,
+             standard_example_translation TEXT,
+             updated_at TEXT NOT NULL
+         );",
+    )
+}
+
+/// All identifiers here are fixed SQL, never interpolated user input. Missing
+/// metadata in pre-plan databases is treated like an empty tagged wordbook.
+fn wordbook_filter(conn: &Connection, wordbook: &str) -> Result<String, ReviewError> {
+    match wordbook {
+        "custom" => Ok("w.id IN (SELECT word_id FROM custom_wordbook_words UNION SELECT word_id FROM word_notes WHERE bookmarked = 1)".into()),
+        "encountered" => Ok("EXISTS (SELECT 1 FROM encounters e WHERE e.word_id = w.id)".into()),
+        "cet4" | "cet6" | "ky" | "toefl" | "ielts" | "gre" | "gk" | "oxford" => {
+            let mut stmt = conn.prepare("PRAGMA table_info(words)")?;
+            let columns = stmt.query_map([], |r| r.get::<_, String>(1))?
+                .collect::<Result<Vec<_>, _>>()?;
+            let tags = if columns.iter().any(|c| c == "tags") {
+                "instr(lower(w.tags), ?1) > 0"
+            } else {
+                "0"
+            };
+            let filter = if wordbook == "oxford" && columns.iter().any(|c| c == "oxford") {
+                format!("(w.oxford = 1 OR {tags})")
+            } else {
+                tags.to_string()
+            };
+            // Bind a named numeric parameter even when metadata columns are absent.
+            let filter = format!("({filter}) AND ?1 IS NOT NULL");
+            let exists: bool = conn.query_row(
+                &format!("SELECT EXISTS(SELECT 1 FROM words w WHERE {filter})"),
+                [wordbook], |r| r.get(0),
+            )?;
+            if exists {
+                Ok(filter)
+            } else {
+                Ok("(w.source = 'seed' OR w.frequency_rank > 0) AND ?1 IS NOT NULL".into())
+            }
+        }
+        _ => Err(ReviewError::NoWordData),
+    }
+}
 
 pub struct ReviewService;
 
@@ -32,6 +92,185 @@ struct PendingReview {
 }
 
 impl ReviewService {
+    /// Read-only card browsing: only grading records a first encounter.
+    pub fn study_group(
+        &self,
+        conn: &Connection,
+        wordbook: &str,
+        daily_new_limit: u32,
+        priority: StudyPriority,
+        now: DateTime<Utc>,
+    ) -> Result<StudySessionGroup, ReviewError> {
+        ensure_study_schema(conn)?;
+        let filter = wordbook_filter(conn, wordbook)?;
+        let midnight = now.date_naive().and_hms_opt(0, 0, 0).unwrap().and_utc();
+        let today_learned_new: u32 = conn.query_row(
+            "SELECT COUNT(*) FROM memory_states WHERE first_visit_at >= ?1 AND first_visit_at < ?2",
+            params![
+                fmt_ts(midnight),
+                fmt_ts(midnight + chrono::Duration::days(1))
+            ],
+            |r| r.get(0),
+        )?;
+        let mut due_cards = Vec::new();
+        let due = MemoryService::default().due_words(conn, now)?;
+        let due_count = due.len();
+        for word in due {
+            if let Some(card) = study_card(conn, word.word_id, false)? {
+                due_cards.push(card);
+                if due_cards.len() == 20 {
+                    break;
+                }
+            }
+        }
+        let mut new_cards = Vec::new();
+        let quota = daily_new_limit.saturating_sub(today_learned_new).min(20);
+        if wordbook != "encountered" && quota > 0 {
+            let sql = format!(
+                "SELECT w.id FROM words w WHERE ({filter}) AND ?1 IS NOT NULL
+                 AND NOT EXISTS (SELECT 1 FROM memory_states m WHERE m.word_id = w.id)
+                 AND NOT EXISTS (SELECT 1 FROM ignored_words i WHERE i.word_id = w.id)
+                 AND EXISTS (SELECT 1 FROM senses s WHERE s.word_id = w.id
+                     AND (trim(s.english_definition) <> '' OR trim(coalesce(s.chinese_definition, '')) <> ''))
+                 ORDER BY CASE WHEN w.frequency_rank > 0 THEN 0 ELSE 1 END,
+                          w.frequency_rank, w.id LIMIT ?2"
+            );
+            let mut stmt = conn.prepare(&sql)?;
+            let ids = stmt
+                .query_map(params![wordbook, quota], |r| r.get::<_, i64>(0))?
+                .collect::<Result<Vec<_>, _>>()?;
+            for id in ids {
+                if let Some(card) = study_card(conn, WordId(id), true)? {
+                    new_cards.push(card);
+                }
+            }
+        }
+        let new_count = new_cards.len();
+        let mut cards = Vec::new();
+        match priority {
+            StudyPriority::NewFirst => {
+                cards.extend(new_cards.into_iter().chain(due_cards).take(20))
+            }
+            StudyPriority::ReviewFirst => {
+                cards.extend(due_cards.into_iter().chain(new_cards).take(20))
+            }
+            StudyPriority::Mixed => {
+                let mut due = due_cards.into_iter();
+                let mut new = new_cards.into_iter();
+                while cards.len() < 20 {
+                    match (due.next(), new.next()) {
+                        (None, None) => break,
+                        (a, b) => {
+                            cards.extend(a);
+                            if cards.len() < 20 {
+                                cards.extend(b);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        Ok(StudySessionGroup {
+            cards,
+            due_count,
+            new_count,
+            today_learned_new: today_learned_new as usize,
+        })
+    }
+
+    pub fn study_grade(
+        &self,
+        conn: &Connection,
+        word_id: WordId,
+        grade: StudyGrade,
+        now: DateTime<Utc>,
+    ) -> Result<ReviewFeedback, ReviewError> {
+        let tx = conn.unchecked_transaction()?;
+        let entry = engine::entry_by_id(&tx, word_id)?.ok_or(ReviewError::NoWordData)?;
+        let memory_service = MemoryService::default();
+        let encountered: bool = tx.query_row(
+            "SELECT EXISTS(SELECT 1 FROM encounters WHERE word_id = ?1)",
+            [word_id.0],
+            |r| r.get(0),
+        )?;
+        if !encountered {
+            memory_service.open_visit(&tx, word_id, now)?;
+        }
+        let (quality, correct) = match grade {
+            StudyGrade::Know => (RecallQuality::Good, true),
+            StudyGrade::Hazy => (RecallQuality::Hard, true),
+            StudyGrade::Forgot => (RecallQuality::Forgotten, false),
+        };
+        tx.execute(
+            "INSERT INTO reviews (word_id, started_at, completed_at, quality) VALUES (?1, ?2, ?2, ?3)",
+            params![word_id.0, fmt_ts(now), quality.as_str()],
+        )?;
+        let review_id = tx.last_insert_rowid();
+        tx.execute(
+            "INSERT INTO review_attempts (review_id, at, action, correct) VALUES (?1, ?2, 'answer', ?3)",
+            params![review_id, fmt_ts(now), correct],
+        )?;
+        let memory = memory_service.refresh_word(&tx, word_id, now)?;
+        tx.commit()?;
+        Ok(ReviewFeedback {
+            correct,
+            quality,
+            answer: entry.display,
+            hints_used: 0,
+            memory,
+        })
+    }
+
+    pub fn wordbooks_list(&self, conn: &Connection) -> Result<Vec<WordbookInfo>, ReviewError> {
+        ensure_study_schema(conn)?;
+        let mut books = Vec::new();
+        for (id, name) in [
+            ("cet4", "CET-4"),
+            ("cet6", "CET-6"),
+            ("ky", "考研"),
+            ("toefl", "TOEFL"),
+            ("ielts", "IELTS"),
+            ("gre", "GRE"),
+            ("gk", "高考"),
+            ("oxford", "Oxford 3000"),
+            ("custom", "自定义单词本"),
+        ] {
+            let filter = wordbook_filter(conn, id)?;
+            let (total_words, learned_words) = conn.query_row(
+                &format!("SELECT COUNT(*), COUNT(m.word_id) FROM words w LEFT JOIN memory_states m ON m.word_id = w.id WHERE ({filter}) AND ?1 IS NOT NULL"),
+                [id], |r| Ok((r.get(0)?, r.get(1)?)),
+            )?;
+            books.push(WordbookInfo {
+                id: id.into(),
+                name: name.into(),
+                total_words,
+                learned_words,
+            });
+        }
+        Ok(books)
+    }
+
+    pub fn custom_wordbook_toggle(
+        &self,
+        conn: &Connection,
+        word_id: WordId,
+        added: bool,
+    ) -> Result<(), ReviewError> {
+        ensure_study_schema(conn)?;
+        if added {
+            conn.execute(
+                "INSERT OR IGNORE INTO custom_wordbook_words (word_id) VALUES (?1)",
+                [word_id.0],
+            )?;
+        } else {
+            conn.execute(
+                "DELETE FROM custom_wordbook_words WHERE word_id = ?1",
+                [word_id.0],
+            )?;
+        }
+        Ok(())
+    }
+
     /// 只读复习组：沿用现有到期筛选与优先级，截断到组上限。
     /// 本地题目仅用释义（中文优先）；AI 例句由应用层补成填空题。
     pub fn group(
@@ -247,8 +486,46 @@ impl ReviewService {
     }
 }
 
+fn study_card(
+    conn: &Connection,
+    id: WordId,
+    is_new: bool,
+) -> Result<Option<StudyCardEntry>, ReviewError> {
+    let Some(entry) = engine::entry_by_id(conn, id)? else {
+        return Ok(None);
+    };
+    let prompt = grader::build_definition_prompt(&entry);
+    if entry.senses.is_empty() || prompt.text.trim().is_empty() {
+        return Ok(None);
+    }
+    let (bookmarked, in_custom_wordbook) = conn.query_row(
+        "SELECT EXISTS(SELECT 1 FROM word_notes WHERE word_id = ?1 AND bookmarked = 1),
+                EXISTS(SELECT 1 FROM custom_wordbook_words WHERE word_id = ?1)",
+        [id.0],
+        |r| Ok((r.get::<_, bool>(0)?, r.get::<_, bool>(1)?)),
+    )?;
+    Ok(Some(StudyCardEntry {
+        item: ReviewItem {
+            word_id: id,
+            prompt: prompt.text,
+            kind: prompt.kind,
+            source: PromptSource::Dictionary,
+            sense_id: prompt.sense_id,
+            example_id: prompt.example_id,
+        },
+        entry,
+        is_new,
+        bookmarked,
+        in_custom_wordbook,
+    }))
+}
+
 /// 逐级提示构造（正式复习与只读重考共用，保证行为一致）。
-fn hint_for(entry: &WordEntry, sense_id: Option<SenseId>, hint_no: u32) -> Result<Hint, ReviewError> {
+fn hint_for(
+    entry: &WordEntry,
+    sense_id: Option<SenseId>,
+    hint_no: u32,
+) -> Result<Hint, ReviewError> {
     let sense = match sense_id {
         Some(id) => entry.senses.iter().find(|sense| sense.id == id),
         None => entry.senses.first(),
@@ -313,6 +590,249 @@ mod tests {
             .open_visit(conn, id, now - chrono::Duration::days(3))
             .unwrap();
         id
+    }
+
+    #[test]
+    fn study_fallback_quota_priorities_and_read_only_browsing() {
+        let conn = test_conn();
+        SeedProvider.import(&conn).unwrap();
+        let now = Utc::now();
+        let due = make_due(&conn, "meticulous");
+        let today = seeded_word(&conn, "subtle");
+        Mem::default().open_visit(&conn, today, now).unwrap();
+        let ignored = seeded_word(&conn, "acquire");
+        Mem::default().set_ignored(&conn, ignored, true).unwrap();
+        for priority in [
+            StudyPriority::Mixed,
+            StudyPriority::NewFirst,
+            StudyPriority::ReviewFirst,
+        ] {
+            let group = ReviewService
+                .study_group(&conn, "cet4", 3, priority, now)
+                .unwrap();
+            assert_eq!(group.today_learned_new, 1);
+            assert_eq!(group.new_count, 2);
+            assert_eq!(group.due_count, 1);
+            assert_eq!(group.cards.len(), 3);
+            assert!(!group
+                .cards
+                .iter()
+                .any(|c| c.entry.id == today || c.entry.id == ignored));
+            assert_eq!(group.cards.iter().filter(|c| c.is_new).count(), 2);
+            assert_eq!(group.cards[0].is_new, priority == StudyPriority::NewFirst);
+            assert!(group.cards.iter().any(|c| c.entry.id == due && !c.is_new));
+        }
+        let exhausted = ReviewService
+            .study_group(&conn, "cet4", 0, StudyPriority::Mixed, now)
+            .unwrap();
+        assert_eq!(exhausted.new_count, 0);
+        assert_eq!(
+            conn.query_row("SELECT COUNT(*) FROM encounters", [], |r| r
+                .get::<_, i64>(0))
+                .unwrap(),
+            2
+        );
+        assert_eq!(
+            conn.query_row("SELECT COUNT(*) FROM reviews", [], |r| r.get::<_, i64>(0))
+                .unwrap(),
+            0
+        );
+        assert!(ReviewService
+            .study_group(&conn, "unknown", 20, StudyPriority::Mixed, now)
+            .is_err());
+    }
+
+    #[test]
+    fn study_tagged_oxford_custom_and_encountered_books() {
+        let conn = test_conn();
+        SeedProvider.import(&conn).unwrap();
+        conn.execute_batch("UPDATE words SET tags = '', oxford = 0;")
+            .unwrap();
+        let tagged = seeded_word(&conn, "meticulous");
+        let oxford = seeded_word(&conn, "subtle");
+        conn.execute(
+            "UPDATE words SET tags = 'CET4 cet6' WHERE id = ?1",
+            [tagged.0],
+        )
+        .unwrap();
+        conn.execute("UPDATE words SET oxford = 1 WHERE id = ?1", [oxford.0])
+            .unwrap();
+        let now = Utc::now();
+        let group = ReviewService
+            .study_group(&conn, "cet4", 20, StudyPriority::Mixed, now)
+            .unwrap();
+        assert_eq!(group.cards.len(), 1);
+        assert_eq!(group.cards[0].entry.id, tagged);
+        let group = ReviewService
+            .study_group(&conn, "oxford", 20, StudyPriority::Mixed, now)
+            .unwrap();
+        assert_eq!(group.cards.len(), 1);
+        assert_eq!(group.cards[0].entry.id, oxford);
+        ReviewService
+            .custom_wordbook_toggle(&conn, tagged, true)
+            .unwrap();
+        ReviewService
+            .custom_wordbook_toggle(&conn, tagged, true)
+            .unwrap();
+        crate::library::save_note(&conn, oxford.0, true, "note").unwrap();
+        let group = ReviewService
+            .study_group(&conn, "custom", 20, StudyPriority::Mixed, now)
+            .unwrap();
+        assert_eq!(group.cards.len(), 2);
+        assert!(group
+            .cards
+            .iter()
+            .any(|c| c.entry.id == tagged && c.in_custom_wordbook));
+        assert!(group
+            .cards
+            .iter()
+            .any(|c| c.entry.id == oxford && c.bookmarked));
+        let books = ReviewService.wordbooks_list(&conn).unwrap();
+        assert_eq!(books.len(), 9);
+        assert_eq!(
+            books.iter().find(|b| b.id == "custom").unwrap().total_words,
+            2
+        );
+        ReviewService
+            .custom_wordbook_toggle(&conn, tagged, false)
+            .unwrap();
+        assert!(ReviewService
+            .study_group(&conn, "encountered", 20, StudyPriority::Mixed, now)
+            .unwrap()
+            .cards
+            .is_empty());
+        Mem::default()
+            .open_visit(&conn, tagged, now - chrono::Duration::days(3))
+            .unwrap();
+        let group = ReviewService
+            .study_group(&conn, "encountered", 20, StudyPriority::Mixed, now)
+            .unwrap();
+        assert_eq!(group.cards.len(), 1);
+        assert!(!group.cards[0].is_new);
+        let books = ReviewService.wordbooks_list(&conn).unwrap();
+        assert_eq!(
+            books.iter().find(|b| b.id == "cet4").unwrap().learned_words,
+            1
+        );
+    }
+
+    #[test]
+    fn study_grades_create_atomic_events_and_count_first_visit_once() {
+        let conn = test_conn();
+        SeedProvider.import(&conn).unwrap();
+        let id = seeded_word(&conn, "meticulous");
+        let now = Utc::now();
+        for (grade, quality, correct) in [
+            (StudyGrade::Know, RecallQuality::Good, true),
+            (StudyGrade::Hazy, RecallQuality::Hard, true),
+            (StudyGrade::Forgot, RecallQuality::Forgotten, false),
+        ] {
+            let feedback = ReviewService.study_grade(&conn, id, grade, now).unwrap();
+            assert_eq!(feedback.quality, quality);
+            assert_eq!(feedback.correct, correct);
+            assert!(feedback.memory.is_some());
+        }
+        assert_eq!(
+            conn.query_row("SELECT COUNT(*) FROM encounters", [], |r| r
+                .get::<_, i64>(0))
+                .unwrap(),
+            1
+        );
+        assert_eq!(
+            conn.query_row(
+                "SELECT COUNT(*) FROM reviews WHERE completed_at IS NOT NULL",
+                [],
+                |r| r.get::<_, i64>(0)
+            )
+            .unwrap(),
+            3
+        );
+        assert_eq!(
+            conn.query_row("SELECT SUM(correct) FROM review_attempts", [], |r| r
+                .get::<_, i64>(0))
+                .unwrap(),
+            2
+        );
+        let group = ReviewService
+            .study_group(&conn, "cet4", 20, StudyPriority::Mixed, now)
+            .unwrap();
+        assert_eq!(group.today_learned_new, 1);
+        assert!(group.cards.len() <= 20);
+        assert!(ReviewService
+            .study_grade(&conn, WordId(-1), StudyGrade::Know, now)
+            .is_err());
+    }
+
+    #[test]
+    fn study_session_limit_and_utc_day_boundary() {
+        let conn = test_conn();
+        let now = DateTime::parse_from_rfc3339("2026-10-20T00:00:00Z")
+            .unwrap()
+            .with_timezone(&Utc);
+        for i in 0..50 {
+            conn.execute(
+                "INSERT INTO words (word, display, source, created_at) VALUES (?1, ?1, 'seed', ?2)",
+                params![format!("studyword{i}"), fmt_ts(now)],
+            )
+            .unwrap();
+            let id = WordId(conn.last_insert_rowid());
+            conn.execute(
+                "INSERT INTO senses (word_id, english_definition) VALUES (?1, 'A vocabulary test word')",
+                [id.0],
+            ).unwrap();
+            if i < 25 {
+                Mem::default()
+                    .open_visit(&conn, id, now - chrono::Duration::days(3))
+                    .unwrap();
+            } else if i == 25 {
+                Mem::default().open_visit(&conn, id, now).unwrap();
+            } else if i == 26 {
+                Mem::default()
+                    .open_visit(&conn, id, now - chrono::Duration::milliseconds(1))
+                    .unwrap();
+            }
+        }
+        for priority in [
+            StudyPriority::Mixed,
+            StudyPriority::NewFirst,
+            StudyPriority::ReviewFirst,
+        ] {
+            let group = ReviewService
+                .study_group(&conn, "cet4", 100, priority, now)
+                .unwrap();
+            assert_eq!(group.cards.len(), 20);
+            assert_eq!(group.today_learned_new, 1);
+            let new_count = group.cards.iter().filter(|c| c.is_new).count();
+            assert_eq!(
+                new_count,
+                match priority {
+                    StudyPriority::Mixed => 10,
+                    StudyPriority::NewFirst => 20,
+                    StudyPriority::ReviewFirst => 0,
+                }
+            );
+            let ids: std::collections::HashSet<_> =
+                group.cards.iter().map(|c| c.entry.id).collect();
+            assert_eq!(ids.len(), 20);
+        }
+    }
+
+    #[test]
+    fn study_grade_rolls_back_initial_visit_if_review_write_fails() {
+        let conn = test_conn();
+        SeedProvider.import(&conn).unwrap();
+        let id = seeded_word(&conn, "meticulous");
+        conn.execute_batch("CREATE TRIGGER reject_study_review BEFORE INSERT ON reviews BEGIN SELECT RAISE(ABORT, 'test failure'); END;").unwrap();
+        assert!(ReviewService
+            .study_grade(&conn, id, StudyGrade::Know, Utc::now())
+            .is_err());
+        assert_eq!(
+            conn.query_row("SELECT COUNT(*) FROM encounters", [], |r| r
+                .get::<_, i64>(0))
+                .unwrap(),
+            0
+        );
+        assert!(Mem::default().load_state(&conn, id).unwrap().is_none());
     }
 
     #[test]
@@ -518,8 +1038,17 @@ mod tests {
         // 11 个到期词：3 天前的弱查词
         let mut due_ids = Vec::new();
         for word in [
-            "meticulous", "subtle", "acquire", "elaborate", "inevitable", "reluctant",
-            "compelling", "profound", "ambiguous", "resilient", "pragmatic",
+            "meticulous",
+            "subtle",
+            "acquire",
+            "elaborate",
+            "inevitable",
+            "reluctant",
+            "compelling",
+            "profound",
+            "ambiguous",
+            "resilient",
+            "pragmatic",
         ] {
             let id = seeded_word(&conn, word);
             Mem::default()
@@ -584,7 +1113,10 @@ mod tests {
         let group = ReviewService.group(&conn, now).unwrap();
         for g in &group {
             assert_eq!(g.item.kind, crate::review::model::PromptKind::DefinitionZh);
-            assert_eq!(g.item.source, crate::review::model::PromptSource::Dictionary);
+            assert_eq!(
+                g.item.source,
+                crate::review::model::PromptSource::Dictionary
+            );
             assert!(g.item.example_id.is_none());
             assert!(!g.item.prompt.contains(&g.entry.word), "答案不得留在题目里");
         }
@@ -612,9 +1144,11 @@ mod tests {
         assert!(!svc
             .practice_check(&conn, word_id, Some("subtle".into()))
             .unwrap());
-        assert!(svc
-            .practice_check(&conn, word_id, Some("meticulus".into()))
-            .unwrap(), "编辑距离 1 应判对");
+        assert!(
+            svc.practice_check(&conn, word_id, Some("meticulus".into()))
+                .unwrap(),
+            "编辑距离 1 应判对"
+        );
         assert!(!svc.practice_check(&conn, word_id, None).unwrap());
 
         // 提示：1..=3 有效，越界拒绝
@@ -642,7 +1176,8 @@ mod tests {
             reviews_before
         );
         assert_eq!(
-            conn.query_row("SELECT COUNT(*) FROM review_attempts", [], |r| r.get::<_, i64>(0))
+            conn.query_row("SELECT COUNT(*) FROM review_attempts", [], |r| r
+                .get::<_, i64>(0))
                 .unwrap(),
             attempts_before
         );

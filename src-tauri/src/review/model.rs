@@ -1,7 +1,56 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::domain::{ExampleId, SenseId, WordId};
 use crate::memory::model::{MemoryState, RecallQuality};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum StudyPriority {
+    Mixed,
+    NewFirst,
+    ReviewFirst,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum StudyPace {
+    Standard,
+    Intensive,
+    Casual,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum StudyGrade {
+    Know,
+    Hazy,
+    Forgot,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct WordbookInfo {
+    pub id: String,
+    pub name: String,
+    pub total_words: usize,
+    pub learned_words: usize,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct StudyCardEntry {
+    pub entry: crate::dictionary::model::WordEntry,
+    pub item: ReviewItem,
+    pub is_new: bool,
+    pub bookmarked: bool,
+    pub in_custom_wordbook: bool,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct StudySessionGroup {
+    pub cards: Vec<StudyCardEntry>,
+    pub due_count: usize,
+    pub new_count: usize,
+    pub today_learned_new: usize,
+}
 
 /// 题目类型（显式字段，前端不再凭 example_id 推断）。
 /// 出题优先级：词典例句挖空 → AI 例句挖空 → 英文释义 → 中文释义兜底。
