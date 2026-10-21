@@ -1,6 +1,6 @@
 # Lexica.
 
-> A local-first English dictionary that tries to make itself unnecessary.
+> 一本尽量让自己变得多余的本地英语词典。
 
 [![release](https://img.shields.io/github/v/release/YinLingxiao/Lexica.)](https://github.com/YinLingxiao/Lexica./releases/latest)
 [![downloads](https://img.shields.io/github/downloads/YinLingxiao/Lexica./total)](https://github.com/YinLingxiao/Lexica./releases)
@@ -10,181 +10,181 @@
 
 **Tauri 2 · Rust · SQLite / FTS5 · SvelteKit 5**
 
-Look a word up, read it the way a page is set, then keep the ones worth remembering. The dictionary, notes, bookmarks, and review schedule stay on this machine. Lexica is built for two daily rituals: an instant lookup beside whatever you are reading, and a short study session from a wordbook.
+查一个词，按书页的方式读完，把值得记住的留下。词典、笔记、收藏和复习计划都在这台电脑上。Lexica 为两件日常的事而做：阅读时顺手查词，以及从一本词书里走完一组短学习。
 
-![Lexica home](docs/screenshots/home-light.png)
+![首页](docs/screenshots/home-light.png)
 
 ---
 
-## Download
+## 下载
 
-Windows 10 / 11 (x64). WebView2 is usually already installed.
+Windows 10 / 11（x64）。WebView2 通常已经装好。
 
-| File | Size | Notes |
+| 文件 | 大小 | 说明 |
 | --- | --- | --- |
-| **[Lexica-setup.exe](https://github.com/YinLingxiao/Lexica./releases/latest/download/Lexica-setup.exe)** | ~3.5 MB | **Recommended.** NSIS installer with Start Menu and desktop shortcuts |
-| [Lexica.msi](https://github.com/YinLingxiao/Lexica./releases/latest/download/Lexica.msi) | ~5.3 MB | Better for silent or enterprise deploy |
+| **[Lexica-setup.exe](https://github.com/YinLingxiao/Lexica./releases/latest/download/Lexica-setup.exe)** | 约 3.5 MB | **推荐。** NSIS 安装包，带开始菜单和桌面快捷方式 |
+| [Lexica.msi](https://github.com/YinLingxiao/Lexica./releases/latest/download/Lexica.msi) | 约 5.3 MB | 适合静默安装或企业部署 |
 
-These are permanent `latest` links. A specific version is on [Releases](https://github.com/YinLingxiao/Lexica./releases).
+上面是固定的 `latest` 链接。指定版本见 [Releases](https://github.com/YinLingxiao/Lexica./releases)。
 
-> The installer is currently **unsigned**. Windows SmartScreen may warn about an unknown publisher. Choose **More info → Run anyway**.
+> 安装包目前**没有签名**。Windows SmartScreen 可能提示未知发布者。选择**更多信息 → 仍要运行**。
 
 ---
 
-## What you can do
+## 能做什么
 
-### Look up a word
+### 查词
 
-The home page is a search field. Type a prefix and the suggestion list opens; arrow keys and Enter pick an entry. Inflected forms fall back to the headword (`running` → `run`). Recent lookups and a few starter words sit under the search box. A word can also be opened directly with `/?word=meticulous`.
+首页就是一个搜索框。输入前缀会打开建议列表，方向键和 Enter 选中词条。屈折形式会回到词头（`running` → `run`）。搜索框下面是最近查过的词，以及几个起步词。也可以直接打开 `/?word=meticulous`。
 
-The entry opens as a reading page, not a stack of admin cards:
+词条是一页阅读，不是一叠管理卡片：
 
-- The headword is shown whole, then splits into syllables (`me·tic·u·lous`). The dots ease open one after another. Turn this off under **Settings → 学习设置 → 自动分音节**; the same switch drives the study card.
-- Phonetic transcription and a speaker button. Pronunciation uses the Windows offline English voice (US or UK, with rate 0.8 / 1 / 1.2).
-- Frequency ticks, a difficulty bar, and a CEFR tag when the entry has one.
-- **Context first** shows one sense and its examples, then **Full entry** opens the rest. **Full entry** in Settings keeps every sense open.
-- Each example highlights the headword. Chinese sits under the English line.
-- Further down, when the data exists: inflection, mnemonic, root and affix, derivatives, similar words, synonyms, antonyms, and collocations.
-- A private note lives beside the entry. Bookmark, remove, copy the entry, or pause review reminders for that word.
+- 词头先以完整单词出现，再拆成音节（`me·tic·u·lous`）。分隔点依次展开。在 **Settings → 学习设置 → 自动分音节** 里关掉；学习卡用同一个开关。
+- 音标和喇叭。发音走 Windows 离线英语语音（美音或英音，语速 0.8 / 1 / 1.2）。
+- 有数据时显示词频刻度、难度条和 CEFR 标签。
+- **Context first** 先给一个义项和例句，点 **Full entry** 展开其余义项。在设置里选 **Full entry** 则每次都展开全部。
+- 例句里词头会高亮，中文跟在英文下面。
+- 再往下，有数据才出现：词形变化、助记、词根词缀、派生、形近词、近义词、反义词、搭配。
+- 词条旁边可以写私人笔记。可以收藏、移除、复制整条，或暂停这个词的复习提醒。
 
-In the browser preview those actions are disabled. The desktop app writes them.
+浏览器预览里这些写入是禁用的。桌面应用才会保存。
 
-### Study a wordbook
+### 词书学习
 
-**Review** is a study session, not a wall of due cards.
+**Review** 是一组学习，不是一堵待复习卡片墙。
 
-Pick a book in **学习设置**:
+在 **学习设置** 里选词书：
 
-| Book | Id |
+| 词书 | 标识 |
 | --- | --- |
-| CET-4, CET-6, 考研, 高考 | `cet4` `cet6` `ky` `gk` |
-| TOEFL, IELTS, GRE | `toefl` `ielts` `gre` |
+| CET-4、CET-6、考研、高考 | `cet4` `cet6` `ky` `gk` |
+| TOEFL、IELTS、GRE | `toefl` `ielts` `gre` |
 | Oxford 3000 | `oxford` |
-| Words you bookmarked | `custom` |
-| Words you have looked up | `encountered` |
+| 自己收藏的词 | `custom` |
+| 查过的词 | `encountered` |
 
-A group mixes new words and reviews. You set the daily new-word cap (10, 20, 40, 60, or 100), the mix (`mixed`, new first, or review first), and the plan (`standard`, `intensive`, `casual`).
+一组里新词和复习混在一起。可以设每日新词上限（10、20、40、60、100）、混合方式（`mixed`、新词优先、复习优先）和学习计划（`standard`、`intensive`、`casual`）。
 
-Each card shows:
+每张卡片有：
 
-- A syllable-split headword, phonetic, and speaker.
-- Part of speech and CEFR-tagged English senses.
-- Eight extension tabs: 例句, 助记, 词根词缀, 派生, 近义词, 反义词, 形近词, 词形变化. Tabs can be turned off or reordered in study settings. 例句 can prefer a standard sentence or an exam sentence, in stored order or at random.
-- Chinese can stay visible or wait for a click.
-- **Context** mode leads with the example and hides the full definition until you ask for it.
+- 按音节拆开的词头、音标和喇叭。
+- 词性和带 CEFR 的英文释义。
+- 八个扩展栏：例句、助记、词根词缀、派生、近义词、反义词、形近词、词形变化。栏可以在学习设置里关掉或调整顺序。例句可以偏好标准句或真题句，按存储顺序或随机。
+- 中文可以一直显示，也可以点一下才出现。
+- **Context** 模式先给例句，完整释义等你自己点开。
 
-Grade with the brain button or the keyboard:
+用记忆按钮或键盘评分：
 
-| Key | Grade | What happens |
+| 按键 | 评分 | 结果 |
 | --- | --- | --- |
-| Space, Enter, or 1 | 认识 | The word leaves this group |
-| 2 | 模糊 | Counted as hazy, then the next word |
-| 3 | 忘记 | The word is sent to the back of the group |
+| Space、Enter 或 1 | 认识 | 这个词离开本组 |
+| 2 | 模糊 | 记为模糊，进入下一个词 |
+| 3 | 忘记 | 这个词排到本组末尾 |
 
-The star bookmarks the word. The trash marks it as known and stops scheduling it. A tick bar shows how far through the group you are. **Previous** / **Next** move without grading. **Start practice** opens the in-session cloze after you have browsed the group: first letter, then the English definition, then the Chinese definition. Grading of that cloze stays on this machine even when an example sentence came from AI.
+星标用来收藏。垃圾桶把词标成熟知，不再安排学习。底部刻度表示这组走到哪里。**Previous** / **Next** 只翻页，不评分。浏览完一组后，**Start practice** 进入当组填空：先给首字母，再给英文释义，再给中文释义。就算例句来自 AI，这次评分也在本机完成。
 
-### Words, stats, and appearance
+### 词库、统计和外观
 
-**Words** lists everything you have encountered. Search it, or filter by Saved, Learning, Familiar, Stable, or Paused. Open a row to look the word up again. Pause or resume reminders per word. `/library?filter=bookmarked` deep-links a filter.
+**Words** 列出遇到过的词。可以搜索，或按 Saved、Learning、Familiar、Stable、Paused 筛选。点开一行会重新查这个词。每个词可以单独暂停或恢复提醒。`/library?filter=bookmarked` 可以直接打开某个筛选。
 
-**Stats** shows words encountered, how many are familiar or stable, what is due now, a 14-day lookup and review chart, the memory-stage mix, and words that are fading.
+**Stats** 显示遇到过多少词、熟悉和稳定的有多少、现在到期多少、近 14 天的查词和复习、记忆阶段分布，以及正在淡忘的词。
 
-**Settings** holds everything that used to live in floating controls:
+**Settings** 收齐了以前浮在界面上的开关：
 
-- **Theme** — Light, Dark, or System. Switching from the moon button in the sidebar plays a circular reveal from the pointer. Reduced-motion skips the animation and just switches.
-- **Style theme** — 留白沙龙, 极地群青, or 牛津辞书. These change type, color, and the entry's rules. They are only chosen here.
-- **Lookup** — Context first or Full entry.
-- **Text size** — Normal or Large. Large bumps reading text.
-- **学习设置** — the wordbook, card, plan, voice, example, syllable, and tab options above.
-- **Dictionary** — entry count, re-check, or import your own `stardict.db`.
-- **DeepSeek example sentences** — optional, off until you turn it on.
-- **Shortcuts** — listed in the app: Ctrl K focuses search, arrows and Enter pick a suggestion, U / 2 / 3 step the lookup, Enter submits a practice answer.
+- **Theme**：Light、Dark 或 System。侧栏月亮按钮切换时，从指针处做圆形展开。系统开启“减少动态效果”时直接切换，不做动画。
+- **Style theme**：留白沙龙、极地群青、牛津辞书。改的是字体、颜色和词条的版式线条。只能在这里选。
+- **Lookup**：Context first 或 Full entry。
+- **Text size**：Normal 或 Large。Large 会加大阅读文字。
+- **学习设置**：上面说的词书、卡片、计划、语音、例句、音节和扩展栏。
+- **Dictionary**：词条数量、重新检查，或导入自己的 `stardict.db`。
+- **DeepSeek example sentences**：可选，默认关闭。
+- **Shortcuts**：应用里列着。Ctrl K 聚焦搜索，方向键和 Enter 选建议，U / 2 / 3 切换查词层级，Enter 提交练习答案。
 
-The sidebar collapses to icons on a wide window and becomes a top bar plus a bottom tab bar under 760px.
+宽窗口里侧栏可以收成图标。宽度低于 760px 时，侧栏变成顶栏，底部出现标签栏。
 
-### AI example sentences
+### AI 例句
 
-Off by default. When a dictionary sense has no example, lookup can ask your endpoint for one short sentence. In review, the cloze prompt can use that sentence. The grade itself is always computed locally.
+默认关闭。某个义项没有例句时，查词可以向你配置的接口要一句短句。复习填空也可以用这句。评分始终在本地算。
 
-- Defaults to DeepSeek: `https://api.deepseek.com/v1` and `deepseek-chat`. Any OpenAI-compatible endpoint works.
-- The API key is stored in the **Windows Credential Manager**. It is not written to SQLite, localStorage, or logs. The UI only learns whether a key exists.
-- Rust checks the response (sense id, a non-empty sentence, the target as a whole word) before the UI sees it.
-- Results are cached by word, sense, endpoint, model, and prompt version.
-- Timeout is 15 seconds, with no automatic retry. A failure falls back to the local definition or example.
+- 默认是 DeepSeek：`https://api.deepseek.com/v1` 和 `deepseek-chat`。任何 OpenAI 兼容接口都可以。
+- API Key 存在 **Windows 凭据管理器**里，不进 SQLite、localStorage 或日志。界面只知道有没有钥匙，看不到钥匙本身。
+- Rust 会先检查返回（义项 id、非空句子、目标词是整词）再交给界面。
+- 按单词、义项、接口、模型和提示词版本缓存。
+- 超时 15 秒，不自动重试。失败就退回本地释义或例句。
 
 ---
 
-## Screenshots
+## 截图
 
 | | |
 | --- | --- |
-| ![Home](docs/screenshots/home-light.png) | ![Entry](docs/screenshots/word-light.png) |
-| Home. Search first, then a few words to start from. | `meticulous`, syllables open, context and the start of the full entry. |
-| ![Dark](docs/screenshots/word-dark.png) | ![Review](docs/screenshots/review-fixture.png) |
-| The same entry in dark theme at large text size. | Study card for `surgery`: senses, example, and the grade controls. |
-| ![Settings](docs/screenshots/ai-settings.png) | ![Narrow](docs/screenshots/settings-mobile.png) |
-| Settings: theme, style, dictionary, and optional AI. | The same page at 480px, with the bottom tab bar. |
+| ![首页](docs/screenshots/home-light.png) | ![词条](docs/screenshots/word-light.png) |
+| 首页。先搜索，下面是几个起步词。 | `meticulous`，音节已展开，语境和完整词条的开头。 |
+| ![深色](docs/screenshots/word-dark.png) | ![学习](docs/screenshots/review-fixture.png) |
+| 同一词条的深色、大字号。 | `surgery` 的学习卡：释义、例句和评分按钮。 |
+| ![设置](docs/screenshots/ai-settings.png) | ![窄屏](docs/screenshots/settings-mobile.png) |
+| 设置：主题、风格、词典和可选的 AI。 | 同一页在 480px 下，底部是标签栏。 |
 
-> These are the **browser read-only preview** (50 seed words, so the dictionary line reads `50 entries · offline`). The desktop app uses the full ECDICT corpus. Layout and interaction match; saving does not. The preview banner at the top is only in the browser.
-
----
-
-## First run
-
-1. **Dictionary.** Lexica downloads the free ECDICT corpus (~200 MB zip, about 3.4 million entries, MIT) into the app data folder and imports it. Import can take several minutes. You can skip this and import your own `stardict.db` from Settings later.
-2. **Voice.** If the speaker button is silent, install an English offline voice in Windows Settings → Time & language → Speech.
-3. **Study.** Open Review. The default book is CET-4, 40 new words a day, syllables on. Change any of that under Settings → 学习设置.
-4. **AI examples** *(optional).* Enable them in Settings, paste a key, and test the connection.
+> 这些是**浏览器只读预览**（50 个种子词，所以词典一行写着 `50 entries · offline`）。桌面应用用的是完整 ECDICT。版式和操作一致，保存不行。顶上那条预览提示只在浏览器里出现。
 
 ---
 
-## How it is built
+## 第一次打开
 
-Business rules live in Rust. The frontend is the page, the interaction, and appearance preferences.
+1. **词典。** Lexica 会把免费的 ECDICT（约 200 MB 的 zip，大约 340 万词条，MIT）下载到应用数据目录并导入。导入可能要几分钟。也可以先跳过，以后在设置里导入自己的 `stardict.db`。
+2. **语音。** 喇叭没声音时，到 Windows 设置 → 时间和语言 → 语音，安装一个英语离线语音包。
+3. **学习。** 打开 Review。默认词书是 CET-4，每天 40 个新词，音节拆分开着。要改的话去 Settings → 学习设置。
+4. **AI 例句**（可选）。在设置里打开，贴上 Key，再测一次连接。
+
+---
+
+## 怎么做的
+
+业务规则在 Rust 里。前端负责页面、交互和外观偏好。
 
 ```
 src-tauri/src/
-├── domain/       Pure models (no I/O)
-├── dictionary/   FTS5 lookup, suggestions, inflection, roots, ECDICT download
-├── memory/       Memory-state projection and the scheduler
-├── review/       Study groups, cloze practice, grading
-├── library.rs    Bookmarks, notes, the word list, activity
-├── ai.rs         Optional example generation
-├── database/     Connection, append-only migrations, timestamps
+├── domain/       纯模型（不做 I/O）
+├── dictionary/   FTS5 查词、建议、屈折、词根、ECDICT 下载
+├── memory/       记忆状态投影和调度
+├── review/       学习组、填空练习、评分
+├── library.rs    收藏、笔记、词表、活动
+├── ai.rs         可选的例句生成
+├── database/     连接、只追加的迁移、时间戳
 ├── commands/     Tauri IPC
-├── app.rs        App state and the data directory
-└── bin/          Headless import-ecdict tool
+├── app.rs        应用状态和数据目录
+└── bin/          无界面的 import-ecdict 工具
 ```
 
 ```
 src/
 ├── routes/       /  ·  /library  ·  /review  ·  /stats  ·  /settings
-├── lib/api.ts    IPC wrappers. The browser gets preview stubs.
-├── lib/preview.ts    Read-only fixture used by npm run dev and Playwright
-├── lib/syllables.ts  Headword splitting, shared by lookup and study
-├── lib/tts.ts        System speech
-└── lib/components/   WordView, StudyWordCard, SyllableHeadword, settings
+├── lib/api.ts    IPC 封装。浏览器里换成预览桩。
+├── lib/preview.ts    npm run dev 和 Playwright 用的只读夹具
+├── lib/syllables.ts  词头分音节，查词和学习共用
+├── lib/tts.ts        系统语音
+└── lib/components/   WordView、StudyWordCard、SyllableHeadword、设置
 ```
 
-- `encounters` and completed `reviews` are the **source of truth**. `memory_states` is a **projection** that can be rebuilt.
-- Migrations are append-only (`PRAGMA user_version`). The study wordbooks and grades land in `0005_study_system.sql`.
-- The database lives in the app data directory. A `db_dir.txt` pointer redirects storage and takes effect after restart.
-- Appearance (theme, style edition, text size, reading density, and the whole study preference object) is local to the window and stored in `localStorage` under `lexica.preferences`. It is not part of the dictionary database.
+- `encounters` 和已完成的 `reviews` 是**事实来源**。`memory_states` 是可以重建的**投影**。
+- 迁移只追加（`PRAGMA user_version`）。词书和学习评分在 `0005_study_system.sql`。
+- 数据库在应用数据目录。`db_dir.txt` 可以改存储位置，重启后生效。
+- 外观（主题、风格、字号、阅读密度，以及整份学习偏好）只属于这个窗口，存在 `localStorage` 的 `lexica.preferences` 里，不进词典数据库。
 
 ---
 
-## Develop
+## 开发
 
-You need **Node.js**, **Rust (MSVC)**, the **Windows C++ build tools**, and **WebView2**.
+需要 **Node.js**、**Rust（MSVC）**、**Windows C++ 生成工具**和 **WebView2**。
 
 ```bash
 npm install
 npm run tauri dev
 ```
 
-That starts Vite on `http://127.0.0.1:5173` and opens the desktop window. The window is the real app: ECDICT, SQLite, and the credential store.
+这会在 `http://127.0.0.1:5173` 启动 Vite，并打开桌面窗口。窗口才是真正的应用：ECDICT、SQLite 和凭据存储。
 
-Frontend only, with the 50-word read-only preview:
+只要前端、50 词的只读预览：
 
 ```bash
 npm run dev
@@ -192,9 +192,9 @@ npm run dev
 
 ---
 
-## Build
+## 构建
 
-### Standalone binary
+### 独立可执行文件
 
 ```bash
 npm run build
@@ -202,11 +202,11 @@ cd src-tauri
 cargo build --release --features custom-protocol --bin lexica
 ```
 
-Output: `src-tauri/target/release/lexica.exe`.
+产物：`src-tauri/target/release/lexica.exe`。
 
-`custom-protocol` is required for a release build. Without it the binary cannot serve the embedded `build/` assets.
+发布构建必须带 `custom-protocol`。没有它，程序无法提供内嵌的 `build/` 资源。
 
-### Windows installers
+### Windows 安装包
 
 ```bash
 npm install
@@ -216,34 +216,34 @@ npm run tauri build
 - `src-tauri/target/release/bundle/msi/Lexica_0.1.0_x64_en-US.msi`
 - `src-tauri/target/release/bundle/nsis/Lexica_0.1.0_x64-setup.exe`
 
-Bump `version` in `src-tauri/tauri.conf.json` before shipping.
+发布前先改 `src-tauri/tauri.conf.json` 里的 `version`。
 
-### Headless ECDICT import
+### 无界面导入 ECDICT
 
 ```bash
 cargo run --release --bin import-ecdict -- <stardict.db> <lexica.db>
 ```
 
-This creates and migrates the target database if needed. Running it again is safe.
+目标库不存在时会创建并迁移。再跑一次是安全的。
 
 ---
 
-## Publish
+## 发布
 
-> This repo does **not** use GitHub Actions.
+> 这个仓库**不用 GitHub Actions**。
 >
-> The repository name ends with a period (`Lexica.`). Windows runners use `D:\a\<name>\<name>`, and Windows cannot create a directory with a trailing dot, so `actions/checkout` fails before any workflow step runs.
+> 仓库名以句点结尾（`Lexica.`）。Windows 运行器的路径是 `D:\a\<名字>\<名字>`，Windows 建不出末尾带点的目录，所以 `actions/checkout` 在任何步骤之前就会失败。
 
-From a machine that already has the toolchain:
+在已经装好工具链的机器上：
 
 ```bash
 npm run tauri build
 node scripts/publish-release.mjs
 ```
 
-The script reads the version from `tauri.conf.json`, creates or updates the `v<version>` release, and uploads both the versioned artifacts and the stable names (`Lexica-setup.exe`, `Lexica.msi`). `releases/latest/download/...` then points at that build.
+脚本从 `tauri.conf.json` 读版本，创建或更新 `v<版本>` 发布，并同时上传带版本号的文件和稳定文件名（`Lexica-setup.exe`、`Lexica.msi`）。之后 `releases/latest/download/...` 指向这次构建。
 
-Release notes are filled from [`docs/release-notes-template.md`](docs/release-notes-template.md).
+发布说明来自 [`docs/release-notes-template.md`](docs/release-notes-template.md)。
 
 ```bash
 node scripts/publish-release.mjs --skip-build
@@ -251,11 +251,11 @@ node scripts/publish-release.mjs --replace
 node scripts/publish-release.mjs --tag v0.2.0
 ```
 
-Auth is `GITHUB_TOKEN`, or the Git credential helper. On a signed-in Windows machine the helper is usually enough.
+认证用 `GITHUB_TOKEN`，或 Git 凭据助手。在已经登录的 Windows 上，助手通常就够。
 
 ---
 
-## Test
+## 测试
 
 ```bash
 npm run check
@@ -267,42 +267,42 @@ cargo test
 cargo clippy --all-targets -- -D warnings
 ```
 
-- Playwright covers the preview UI and the IPC fixtures: suggestions, bookmarks, study cards, hint order, anti-double-submit, the theme reveal, AI fallback, and the narrow layout. Several of those tests also write `docs/screenshots/`.
-- Rust tests cover real SQLite storage and the memory rules.
+- Playwright 覆盖预览界面和 IPC 夹具：建议列表、收藏、学习卡、提示顺序、防重复提交、主题展开、AI 回退，以及窄屏。其中几个测试也会写出 `docs/screenshots/`。
+- Rust 测试覆盖真实的 SQLite 存储和记忆规则。
 
 ---
 
-## Privacy
+## 隐私
 
-- The dictionary, bookmarks, notes, and review history live in **local** SQLite.
-- The network is used for two things only: the **first-run ECDICT download**, and **optional AI examples** after you turn them on.
-- With AI on, only the current word and sense are sent, and only to the endpoint you configured. Grading stays local.
-- API keys stay in the Windows Credential Manager.
-
----
-
-## Limits
-
-- Windows x64 only (MSI and NSIS).
-- The installer is unsigned, so SmartScreen warns on first launch.
-- Pronunciation needs a system English voice pack.
-- The first dictionary import needs about 200 MB of download, unless you bring your own `stardict.db`.
-- AI examples need your own API key and can cost money on that provider.
-- The browser preview cannot save. Use the desktop app for bookmarks, notes, and study progress.
-- Syllable splits are a local heuristic plus a small curated list. They are a reading aid, not a phonetic authority.
+- 词典、收藏、笔记和复习记录都在**本地** SQLite。
+- 联网只有两处：第一次启动时**下载 ECDICT**，以及你打开之后的**可选 AI 例句**。
+- 打开 AI 后，发出去的只有当前单词和义项，而且只发到你配置的接口。评分留在本地。
+- API Key 留在 Windows 凭据管理器里。
 
 ---
 
-## License
+## 限制
+
+- 只有 Windows x64（MSI 和 NSIS）。
+- 安装包未签名，第一次打开会有 SmartScreen 提示。
+- 发音需要系统里的英语语音包。
+- 第一次导入词典大约要下载 200 MB，除非你自己带 `stardict.db`。
+- AI 例句需要你自己的 API Key，可能向该服务商付费。
+- 浏览器预览不能保存。收藏、笔记和学习进度请用桌面应用。
+- 音节拆分是本地启发式加上一小份整理过的词表。它是阅读辅助，不是权威音标。
+
+---
+
+## 许可
 
 [MIT](LICENSE) © YinLingxiao
 
-Free to use, modify, and distribute, including commercially, with the copyright notice kept.
+可以自由使用、修改和分发，包括商用，保留版权声明即可。
 
 ---
 
-## Credits
+## 致谢
 
-Review notes and follow-ups: [PROJECT_REVIEW.md](docs/PROJECT_REVIEW.md).
+评审记录和后续事项：[PROJECT_REVIEW.md](docs/PROJECT_REVIEW.md)。
 
-Dictionary data: [ECDICT](https://github.com/skywind3000/ECDICT) (MIT).
+词典数据：[ECDICT](https://github.com/skywind3000/ECDICT)（MIT）。
